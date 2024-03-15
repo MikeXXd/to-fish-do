@@ -23,7 +23,7 @@ const InterfaceBar = ({ onSubmit }: InterfaceBarProps) => {
   }
 
   return (
-    <form className="container p-2 m-2" onSubmit={addtask}>
+    <form className="flex justify-start p-2 "  onSubmit={addtask}>
       <label className="block ">
         <span className="block text-sm font-medium text-slate-700">
           New task
@@ -33,7 +33,7 @@ const InterfaceBar = ({ onSubmit }: InterfaceBarProps) => {
           id="task"
           placeholder="add new task"
           ref={newTaskRef}
-          className="w-11/12 p-2"
+          className="  p-2 max-w-[800px] min-w-[300px] rounded-md"
         />
       </label>
     </form>
