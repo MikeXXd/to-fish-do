@@ -1,23 +1,17 @@
 import { FieldValues, useForm } from "react-hook-form";
-import { Task } from "../App";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Task } from "../contexts/Task";
+import useTasks from "../hooks/useTasks";
 
 const schema = z.object({
   name: z.string().min(3, { message: "Title must have at least 3 characters" }),
 });
 
-interface InterfaceBarProps {
-  onSubmit: (newTask: Task) => void;
-}
-
 type FormData = z.infer<typeof schema>;
 
-// interface FormData {
-//   name: string;
-// }
-
-const InterfaceBar = ({ onSubmit }: InterfaceBarProps) => {
+export const InterfaceBar = () => {
+  const {addTask } = useTasks()
   const {
     register,
     handleSubmit,
@@ -31,7 +25,7 @@ const InterfaceBar = ({ onSubmit }: InterfaceBarProps) => {
       name: data.name,
       done: false,
     };
-    onSubmit(newTask);
+    addTask(newTask);
     reset();
   }
 
