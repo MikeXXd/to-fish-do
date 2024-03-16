@@ -51,6 +51,12 @@ const InterfaceBar = ({ onSubmit }: InterfaceBarProps) => {
           placeholder="add new task"
           className="  p-2 max-w-[800px] min-w-[300px] rounded-md"
         />
+      <button
+        type="submit"
+        className="px-2 py-1 m-1 bg-gray-400 text-slate-950 rounded-md"
+      >
+        Done
+      </button>
         {errors.name && <p>{errors.name.message}</p>}
       </label>
     </form>
