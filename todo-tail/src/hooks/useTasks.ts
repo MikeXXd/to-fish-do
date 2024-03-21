@@ -1,14 +1,14 @@
-import { useContext } from "react"
-import { Context } from "../contexts/Task"
+import { useContext } from "react";
+import { Context } from "../contexts/Task";
 
 export function useTasks() {
-  const value = useContext(Context)
+  const value = useContext(Context);
 
   if (!value) {
-    throw new Error("Please use this component inside TasksProvider")
+    throw new Error("Please use this component inside TasksProvider");
   }
 
-  return value
+  return value;
 }
 
-export default useTasks
+export default useTasks;

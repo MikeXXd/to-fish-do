@@ -1,16 +1,10 @@
-import { ReactNode, createContext, useState } from "react";
+import { ReactNode, createContext } from "react";
+import { useLocalStorage } from "../hooks/useLocalStorage";
 
 const LOCAL_STORAGE_TASKS = {
-  KEY: "tasks",
-  DEFAULT: "",
+  KEY: "taskies",
+  DEFAULT: []
 };
-
-interface TasksContext {
-  tasks: Task[];
-  addTask: (task: Task) => void;
-  taskDone: (task: Task) => void;
-  deleteTask: (task: Task) => void;
-}
 
 export interface Task {
   id: string;
@@ -18,25 +12,28 @@ export interface Task {
   done: boolean;
 }
 
+interface TasksContext {
+  tasks: Task[];
+  addTask: (task: Task) => void;
+  taskDone: (task: Task) => void;
+  editTask: (taskId: string, newTitle: string) => void;
+  deleteTask: (task: Task) => void;
+}
+
 export const Context = createContext<TasksContext>({} as TasksContext);
 
 export function TasksProvider({ children }: { children: ReactNode }) {
-  const [tasks, setTasks] = useState<Task[]>(() => {
-    const storage = localStorage.getItem(LOCAL_STORAGE_TASKS.KEY);
-    if (storage == null) return [];
-    return JSON.parse(storage);
-  });
-  function updateTasks(newValue: Task[]) {
-    setTasks(newValue);
-    saveToLS(newValue);
-  }
+  const [tasks, setTasks] = useLocalStorage<Task[]>(
+    LOCAL_STORAGE_TASKS.KEY,
+    LOCAL_STORAGE_TASKS.DEFAULT
+  );
 
   function addTask(task: Task) {
-    updateTasks([task, ...tasks]);
+    setTasks([task, ...tasks]);
   }
 
   function taskDone(taskDone: Task) {
-    updateTasks(
+    setTasks(
       tasks.map((task) =>
         task.id === taskDone.id ? { ...task, done: !task.done } : task
       )
@@ -44,7 +41,14 @@ export function TasksProvider({ children }: { children: ReactNode }) {
   }
 
   function deleteTask(DeleteTask: Task) {
-    updateTasks(tasks.filter((task) => task.id !== DeleteTask.id));
+    setTasks(tasks.filter((task) => task.id !== DeleteTask.id));
+  }
+
+  function editTask(taskId: string, newTitle: string) {
+    const updatedTasks = tasks.map((task) =>
+      task.id === taskId ? { ...task, name: newTitle } : task
+    );
+    setTasks(updatedTasks);
   }
 
   return (
@@ -54,13 +58,10 @@ export function TasksProvider({ children }: { children: ReactNode }) {
         addTask,
         taskDone,
         deleteTask,
+        editTask
       }}
     >
       {children}
     </Context.Provider>
   );
-}
-
-function saveToLS(value: Task[]) {
-  localStorage.setItem(LOCAL_STORAGE_TASKS.KEY, JSON.stringify(value));
 }
