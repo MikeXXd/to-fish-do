@@ -57,12 +57,15 @@ function handleOnBlur() {
           <button
             onClick={() => taskDone(task)}
             className={`${task.done ? "text-green-700" : "text-orange-500"} me-1 hover:scale-125`}
+            title="Mark as done"
           >
             <SquareCheck size={24} />
           </button>
           <button
             onClick={() => setIsEditing(true)}
             className={` me-1 p-2 hover:scale-125`}
+            title="Edit task"
+
           >
             <Pencil size={24} />
           </button>
@@ -70,6 +73,7 @@ function handleOnBlur() {
           <button
             onClick={() => deleteTask(task)}
             className={`text-gray-800  hover:scale-125`}
+            title="Delete task"
           >
             <Trash2 size={24} />
           </button>
@@ -79,12 +83,14 @@ function handleOnBlur() {
       {/* -------------------------------------------------------- */}
       {isEditing && (
         <div className="flex flex-nowrap">
-          <button onClick={handleEdit} className={` me-1 p-2 hover:scale-125`}>
+          <button onClick={handleEdit} className={` me-1 p-2 hover:scale-125`}
+          title="Save edited title">
             <Save size={24} />
           </button>
           <button
             onClick={() => setIsEditing(false)}
             className={` me-1 hover:scale-125`}
+            title="Cancel editing"
           >
             <Undo2 size={24} />
           </button>

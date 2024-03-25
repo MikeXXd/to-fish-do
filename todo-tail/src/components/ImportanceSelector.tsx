@@ -34,10 +34,10 @@ export function ImportanceSelector({ onNewTask, task }: Props) {
   }
   return (
     <div className="ms-1 flex ">
-      <div className="hover:scale-125">
+      <div className="hover:scale-125" title="increase importance">
       <FishSymbol color="red" size={15} onClick={handleAddImportance} /></div>
       {Array.from({ length: value - 1 }, (_, index) => (
-        <div key={index} className="hover:scale-125"><FishSymbol
+        <div key={index} className="hover:scale-125" title="decrease importance"><FishSymbol
           
           color="red"
           size={15}

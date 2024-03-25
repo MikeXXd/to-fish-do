@@ -58,6 +58,7 @@ export const InterfaceBar = () => {
       <button
         type="submit"
         className={`text-gray-800 mt-3 p-2 hover:scale-125`}
+        title="Add new task"
       >
         <SquarePlus size={40} strokeWidth={1} />
       </button>
