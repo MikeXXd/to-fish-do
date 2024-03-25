@@ -1,6 +1,8 @@
+import { Pencil, Save, SquareCheck, Trash2, Undo2 } from "lucide-react";
 import { useRef, useState } from "react";
 import { Task } from "../contexts/Task";
 import useTasks from "../hooks/useTasks";
+import { ImportanceSelector } from "./ImportanceSelector";
 
 interface Props {
   task: Task;
@@ -9,18 +11,22 @@ interface Props {
 export function TaskListItem({ task }: Props) {
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const editRef = useRef<HTMLInputElement>(null);
-  const { deleteTask, taskDone, editTask } = useTasks();
+  const { deleteTask, taskDone, editTitle } = useTasks();
+
+function handleOnBlur() {
+  // setTimeout is here to delay the onBlur event so the buttons click event can be triggered first
+  setTimeout(() => {
+    setIsEditing(false);
+  }, 100);
+  }
 
   function handleEdit() {
-    if (
-      editRef.current?.value === undefined ||
-      editRef.current?.value === task.name
-    )
+    const newTitle = editRef.current?.value;
+    if (newTitle === undefined || newTitle === task.name) {
       setIsEditing(false);
-    else {
-      editTask(task.id, editRef.current?.value);
+    } else {
+      editTitle(task, newTitle);
       setIsEditing(false);
-      console.log(editRef.current?.value);
     }
   }
 
@@ -28,10 +34,10 @@ export function TaskListItem({ task }: Props) {
     <li key={task.id} className="flex flex-nowrap justify-between p-2">
       {!isEditing && (
         <span
-          onClick={() => setIsEditing(true)}
-          className={`${task.done && "line-through whitespace-break-spaces"}  `}
+          className={`${task.done && "line-through whitespace-break-spaces"} me-5`}
         >
           {task.name}
+          <ImportanceSelector task={task} />
         </span>
       )}
 
@@ -41,7 +47,8 @@ export function TaskListItem({ task }: Props) {
           type="text"
           defaultValue={task.name}
           autoFocus
-          onBlur={() => setIsEditing(false)}
+          className="ps-1"
+          onBlur={handleOnBlur}
         />
       )}
 
@@ -49,16 +56,22 @@ export function TaskListItem({ task }: Props) {
         <div className="flex flex-nowrap">
           <button
             onClick={() => taskDone(task)}
-            className="px-2 py-1 m-1 h-8 bg-green-700 text-white rounded-md"
+            className={`${task.done ? "text-green-700" : "text-orange-500"} me-1 hover:scale-125`}
           >
-            Done
+            <SquareCheck size={24} />
+          </button>
+          <button
+            onClick={() => setIsEditing(true)}
+            className={` me-1 p-2 hover:scale-125`}
+          >
+            <Pencil size={24} />
           </button>
 
           <button
             onClick={() => deleteTask(task)}
-            className="px-2 py-1 m-1 h-8 bg-red-500 text-white rounded-md"
+            className={`text-gray-800  hover:scale-125`}
           >
-            Delete
+            <Trash2 size={24} />
           </button>
         </div>
       )}
@@ -66,18 +79,14 @@ export function TaskListItem({ task }: Props) {
       {/* -------------------------------------------------------- */}
       {isEditing && (
         <div className="flex flex-nowrap">
-          <button
-            onClick={handleEdit}
-            className="px-2 py-1 m-1 h-8 bg-green-700  text-white rounded-md"
-          >
-            Save
+          <button onClick={handleEdit} className={` me-1 p-2 hover:scale-125`}>
+            <Save size={24} />
           </button>
-
           <button
             onClick={() => setIsEditing(false)}
-            className="px-2 py-1 m-1 h-8 bg-red-500 text-white rounded-md"
+            className={` me-1 hover:scale-125`}
           >
-            Cancel
+            <Undo2 size={24} />
           </button>
         </div>
       )}
