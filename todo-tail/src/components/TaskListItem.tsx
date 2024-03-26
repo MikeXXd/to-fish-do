@@ -47,7 +47,7 @@ function handleOnBlur() {
           type="text"
           defaultValue={task.name}
           autoFocus
-          className="ps-1"
+          className=" px-2 w-full me-2 rounded-md"
           onBlur={handleOnBlur}
         />
       )}
@@ -80,7 +80,7 @@ function handleOnBlur() {
         </div>
       )}
 
-      {/* -------------------------------------------------------- */}
+      {/* ---Editing-------------------------------------------- */}
       {isEditing && (
         <div className="flex flex-nowrap">
           <button onClick={handleEdit} className={` me-1 p-2 hover:scale-125`}
