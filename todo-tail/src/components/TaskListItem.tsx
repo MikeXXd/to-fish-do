@@ -3,6 +3,7 @@ import { useRef, useState } from "react";
 import { Task } from "../contexts/Task";
 import useTasks from "../hooks/useTasks";
 import { ImportanceSelector } from "./ImportanceSelector";
+import { StarAction } from "./StarAction";
 
 interface Props {
   task: Task;
@@ -32,24 +33,23 @@ function handleOnBlur() {
 
   return (
     <li key={task.id} className="flex flex-nowrap justify-between p-2">
-      {!isEditing && (
-        <span
-          className={`${task.done && "line-through whitespace-break-spaces"} me-5`}
-        >
-          {task.name}
-          <ImportanceSelector task={task} />
-        </span>
-      )}
-
-      {isEditing && (
-        <input
+      {isEditing ? <input
           ref={editRef}
           type="text"
           defaultValue={task.name}
           autoFocus
           className=" px-2 w-full me-2 rounded-md"
           onBlur={handleOnBlur}
-        />
+        /> : (
+        <span
+          className={`${task.done && "line-through whitespace-break-spaces"} me-5 w-full`}
+        >
+          {task.name}
+          <div className="flex justify-between">
+          <ImportanceSelector task={task} />
+          <StarAction task={task}/>
+          </div>
+        </span>
       )}
 
       {!isEditing && (
@@ -80,7 +80,7 @@ function handleOnBlur() {
         </div>
       )}
 
-      {/* ---Editing-------------------------------------------- */}
+      {/* --Title-Editing-mode-for-buttons----------------------------------------- */}
       {isEditing && (
         <div className="flex flex-nowrap">
           <button onClick={handleEdit} className={` me-1 p-2 hover:scale-125`}

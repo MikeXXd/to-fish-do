@@ -1,11 +1,11 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SquarePlus } from "lucide-react";
+import { useState } from "react";
 import { FieldValues, useForm } from "react-hook-form";
 import { z } from "zod";
 import { Task } from "../contexts/Task";
 import useTasks from "../hooks/useTasks";
 import { ImportanceSelector } from "./ImportanceSelector";
-import { useState } from "react";
 
 const schema = z.object({
   name: z.string().min(3, { message: "Title must have at least 3 characters" })
@@ -28,6 +28,7 @@ export const InterfaceBar = () => {
       id: crypto.randomUUID(),
       name: data.name,
       importance: importance,
+      star: false,
       done: false
     };
     addTask(newTask);

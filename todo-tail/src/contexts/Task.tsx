@@ -11,6 +11,7 @@ export interface Task {
   name: string;
   importance: number;
   done: boolean;
+  star: boolean;
 }
 
 interface TasksContext {
@@ -22,6 +23,7 @@ interface TasksContext {
   deleteTask: (task: Task) => void;
   filterFinishedTasks: () => void;
   areFinishedTasksHidden: boolean;
+  arrangeStarForTask: (task: Task) => void;
 }
 
 export const Context = createContext<TasksContext>({} as TasksContext);
@@ -31,7 +33,8 @@ export function TasksProvider({ children }: { children: ReactNode }) {
     LOCAL_STORAGE_TASKS.KEY,
     LOCAL_STORAGE_TASKS.DEFAULT
   );
-  const [areFinishedTasksHidden, setAreFinishedTasksHidden] = useState<boolean>(false)
+  const [areFinishedTasksHidden, setAreFinishedTasksHidden] =
+    useState<boolean>(false);
 
   function addTask(task: Task) {
     setTasks([task, ...tasks]);
@@ -40,7 +43,9 @@ export function TasksProvider({ children }: { children: ReactNode }) {
   function taskDone(taskDone: Task) {
     setTasks(
       tasks.map((task) =>
-        task.id === taskDone.id ? { ...task, done: !task.done } : task
+        task.id === taskDone.id
+          ? { ...task, done: !task.done, star: false }
+          : task
       )
     );
   }
@@ -63,10 +68,17 @@ export function TasksProvider({ children }: { children: ReactNode }) {
     setTasks(updatedTasks);
   }
 
-function filterFinishedTasks() { 
-    setAreFinishedTasksHidden(value => !value)
-}
+  function filterFinishedTasks() {
+    setAreFinishedTasksHidden((value) => !value);
+  }
 
+  function arrangeStarForTask(taskStar: Task) {
+    setTasks(
+      tasks.map((task) =>
+        task.id === taskStar.id ? { ...task, star: !task.star } : task
+      )
+    );
+  }
 
   return (
     <Context.Provider
@@ -78,7 +90,8 @@ function filterFinishedTasks() {
         editTitle,
         setImportance,
         filterFinishedTasks,
-        areFinishedTasksHidden
+        areFinishedTasksHidden,
+        arrangeStarForTask
       }}
     >
       {children}
