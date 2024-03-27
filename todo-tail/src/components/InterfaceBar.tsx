@@ -29,7 +29,8 @@ export const InterfaceBar = () => {
       name: data.name,
       importance: importance,
       star: false,
-      done: false
+      done: false,
+      timeOfCreation: new Date().toISOString()
     };
     addTask(newTask);
     reset();

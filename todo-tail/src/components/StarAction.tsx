@@ -9,19 +9,25 @@ interface Props {
 export function StarAction({ task }: Props) {
   const { arrangeStarForTask } = useTasks();
   return (
-    <div className="hover:scale-125">
-      {task.star ? <div
-        className="text-yellow-700 text-md"
+    <div>
+      {task.done ? <div
+        className="text-gray-400 text-md"
+        title="task is done"
+      >
+        <Star size={15} strokeWidth={3}/>
+      </div> :
+      
+      task.star ? <div
+        className="text-yellow-700 text-md hover:scale-125"
         onClick={() => arrangeStarForTask(task)}
         title="Remove star"
       >
         <Star size={15} strokeWidth={3}/>
       </div> :
       <div
-        className="text-gray-400 text-md"
+        className="text-gray-400 text-md hover:scale-125"
         onClick={() => arrangeStarForTask(task)}
         title="Add star"
-
       >
         <Star size={15} />
       </div>}

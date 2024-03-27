@@ -12,6 +12,7 @@ export interface Task {
   importance: number;
   done: boolean;
   star: boolean;
+  timeOfCreation: string;
 }
 
 interface TasksContext {
