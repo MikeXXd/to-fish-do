@@ -6,6 +6,10 @@ const LOCAL_STORAGE_TASKS = {
   DEFAULT: []
 };
 
+const IMPORTANCE_FILTER_VALUES = ["ascend", "descend", "none"] as const;
+
+export type ImportanceFilter = (typeof IMPORTANCE_FILTER_VALUES)[number];
+
 export interface Task {
   id: string;
   name: string;
@@ -25,6 +29,8 @@ interface TasksContext {
   filterFinishedTasks: () => void;
   areFinishedTasksHidden: boolean;
   arrangeStarForTask: (task: Task) => void;
+  filterByImportance: () => void;
+  importanceFilter: ImportanceFilter;
 }
 
 export const Context = createContext<TasksContext>({} as TasksContext);
@@ -36,6 +42,8 @@ export function TasksProvider({ children }: { children: ReactNode }) {
   );
   const [areFinishedTasksHidden, setAreFinishedTasksHidden] =
     useState<boolean>(false);
+  const [importanceFilter, setImportanceFilter] =
+    useState<(typeof IMPORTANCE_FILTER_VALUES)[number]>("none");
 
   function addTask(task: Task) {
     setTasks([task, ...tasks]);
@@ -81,6 +89,21 @@ export function TasksProvider({ children }: { children: ReactNode }) {
     );
   }
 
+  function filterByImportance() {
+    setImportanceFilter((value) => {
+      switch (value) {
+        case "none":
+          return "ascend";
+        case "ascend":
+          return "descend";
+        case "descend":
+          return "ascend";
+        default:
+          return "none";
+      }
+    });
+  }
+
   return (
     <Context.Provider
       value={{
@@ -92,7 +115,9 @@ export function TasksProvider({ children }: { children: ReactNode }) {
         setImportance,
         filterFinishedTasks,
         areFinishedTasksHidden,
-        arrangeStarForTask
+        arrangeStarForTask,
+        importanceFilter,
+        filterByImportance
       }}
     >
       {children}

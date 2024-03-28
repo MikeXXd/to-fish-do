@@ -3,7 +3,7 @@ import { useRef, useState } from "react";
 import { Task } from "../contexts/Task";
 import useTasks from "../hooks/useTasks";
 import { ImportanceSelector } from "./ImportanceSelector";
-import { StarAction } from "./StarAction";
+import { StarIcon } from "./StarIcon";
 
 interface Props {
   task: Task;
@@ -14,11 +14,11 @@ export function TaskListItem({ task }: Props) {
   const editRef = useRef<HTMLInputElement>(null);
   const { deleteTask, taskDone, editTitle } = useTasks();
 
-function handleOnBlur() {
-  // setTimeout is here to delay the onBlur event so the buttons click event can be triggered first
-  setTimeout(() => {
-    setIsEditing(false);
-  }, 100);
+  function handleOnBlur() {
+    // setTimeout is here to delay the onBlur event so the buttons click event can be triggered first
+    setTimeout(() => {
+      setIsEditing(false);
+    }, 100);
   }
 
   function handleEdit() {
@@ -33,21 +33,23 @@ function handleOnBlur() {
 
   return (
     <li key={task.id} className="flex flex-nowrap justify-between p-2">
-      {isEditing ? <input
+      {isEditing ? (
+        <input
           ref={editRef}
           type="text"
           defaultValue={task.name}
           autoFocus
           className=" px-2 w-full me-2 rounded-md"
           onBlur={handleOnBlur}
-        /> : (
+        />
+      ) : (
         <span
           className={`${task.done && "line-through whitespace-break-spaces"} me-5 w-full`}
         >
           {task.name}
           <div className="flex justify-between">
-          <ImportanceSelector task={task} />
-          <StarAction task={task}/>
+            <ImportanceSelector task={task} />
+            <StarIcon task={task} />
           </div>
         </span>
       )}
@@ -65,7 +67,6 @@ function handleOnBlur() {
             onClick={() => setIsEditing(true)}
             className={` me-1 p-2 hover:scale-125`}
             title="Edit task"
-
           >
             <Pencil size={24} />
           </button>
@@ -83,8 +84,11 @@ function handleOnBlur() {
       {/* --Title-Editing-mode-for-buttons----------------------------------------- */}
       {isEditing && (
         <div className="flex flex-nowrap">
-          <button onClick={handleEdit} className={` me-1 p-2 hover:scale-125`}
-          title="Save edited title">
+          <button
+            onClick={handleEdit}
+            className={` me-1 p-2 hover:scale-125`}
+            title="Save edited title"
+          >
             <Save size={24} />
           </button>
           <button
