@@ -31,6 +31,8 @@ interface TasksContext {
   arrangeStarForTask: (task: Task) => void;
   filterByImportance: (importance: ImportanceFilter) => void;
   importanceFilter: ImportanceFilter;
+  filterByTime: (importance: ImportanceFilter) => void;
+  timeFilterState: ImportanceFilter;
 }
 
 export const Context = createContext<TasksContext>({} as TasksContext);
@@ -43,6 +45,8 @@ export function TasksProvider({ children }: { children: ReactNode }) {
   const [areFinishedTasksHidden, setAreFinishedTasksHidden] =
     useState<boolean>(false);
   const [importanceFilter, setImportanceFilter] =
+    useState<(typeof IMPORTANCE_FILTER_VALUES)[number]>("none");
+  const [timeFilterState, setTimeFilterState] =
     useState<(typeof IMPORTANCE_FILTER_VALUES)[number]>("none");
 
   function addTask(task: Task) {
@@ -92,18 +96,9 @@ export function TasksProvider({ children }: { children: ReactNode }) {
   function filterByImportance(importance: ImportanceFilter = "none") {
     setImportanceFilter(importance);
   }
-  // setImportanceFilter((value) => {
-  //   switch (value) {
-  //     case "none":
-  //       return "descend";
-  //     case "descend":
-  //       return "ascend";
-  //     case "ascend":
-  //       return "descend";
-  //     default:
-  //       return "none";
-  //   }
-  // });
+  function filterByTime(timeState: ImportanceFilter = "none") {
+    setTimeFilterState(timeState);
+  }
 
   return (
     <Context.Provider
@@ -118,7 +113,9 @@ export function TasksProvider({ children }: { children: ReactNode }) {
         areFinishedTasksHidden,
         arrangeStarForTask,
         importanceFilter,
-        filterByImportance
+        filterByImportance,
+        filterByTime,
+        timeFilterState
       }}
     >
       {children}
