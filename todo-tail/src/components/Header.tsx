@@ -1,7 +1,7 @@
 const Header = () => {
   return (
-    <div className="text-5xl mt-5 font-bold underline text-center">
-      Todo-tail
+    <div className="text-4xl mt-1 font-bold text-center font-serif">
+      To-Fish-Do
     </div>
   );
 };

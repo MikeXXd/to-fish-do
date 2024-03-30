@@ -29,7 +29,7 @@ interface TasksContext {
   filterFinishedTasks: () => void;
   areFinishedTasksHidden: boolean;
   arrangeStarForTask: (task: Task) => void;
-  filterByImportance: () => void;
+  filterByImportance: (importance: ImportanceFilter) => void;
   importanceFilter: ImportanceFilter;
 }
 
@@ -89,20 +89,21 @@ export function TasksProvider({ children }: { children: ReactNode }) {
     );
   }
 
-  function filterByImportance() {
-    setImportanceFilter((value) => {
-      switch (value) {
-        case "none":
-          return "ascend";
-        case "ascend":
-          return "descend";
-        case "descend":
-          return "ascend";
-        default:
-          return "none";
-      }
-    });
+  function filterByImportance(importance: ImportanceFilter = "none") {
+    setImportanceFilter(importance);
   }
+  // setImportanceFilter((value) => {
+  //   switch (value) {
+  //     case "none":
+  //       return "descend";
+  //     case "descend":
+  //       return "ascend";
+  //     case "ascend":
+  //       return "descend";
+  //     default:
+  //       return "none";
+  //   }
+  // });
 
   return (
     <Context.Provider

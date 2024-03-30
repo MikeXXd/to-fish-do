@@ -11,7 +11,7 @@ interface Props {
 export function ImportanceSelector({ onNewTask, task }: Props) {
   const [value, setValue] = useState(task?.importance || 1);
 
-  const { setImportance } = useTasks();
+  const { setImportance, filterByImportance } = useTasks();
 
   useEffect(() => {
     if (task && task.importance !== value) {
@@ -24,11 +24,13 @@ export function ImportanceSelector({ onNewTask, task }: Props) {
   }, [value, onNewTask]);
 
   function handleAddImportance() {
+    filterByImportance("none");
     if (value <= 4) setValue(value + 1);
     else return;
   }
 
   function handleLessImportance() {
+    filterByImportance("none");
     if (value > 1) setValue(value - 1);
     else return;
   }
@@ -40,7 +42,7 @@ export function ImportanceSelector({ onNewTask, task }: Props) {
       {Array.from({ length: value - 1 }, (_, index) => (
         <div
           key={index}
-          className="hover:scale-125 rotate-180"
+          className="hover:scale-125"
           title="decrease importance"
         >
           <FishSymbol color="red" size={15} onClick={handleLessImportance} />

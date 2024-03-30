@@ -14,7 +14,7 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 export const InterfaceBar = () => {
-  const { addTask } = useTasks();
+  const { addTask, filterByImportance } = useTasks();
   const [importance, setImportance] = useState<number>(1);
   const {
     register,
@@ -33,6 +33,7 @@ export const InterfaceBar = () => {
       timeOfCreation: new Date().toISOString()
     };
     addTask(newTask);
+    filterByImportance("none");
     reset();
   }
 
