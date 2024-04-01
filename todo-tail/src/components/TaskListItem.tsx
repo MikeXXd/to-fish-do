@@ -1,3 +1,4 @@
+import { formatDistance } from "date-fns";
 import { Pencil, Save, SquareCheck, Trash2, Undo2 } from "lucide-react";
 import { useRef, useState } from "react";
 import { Task } from "../contexts/Task";
@@ -31,6 +32,12 @@ export function TaskListItem({ task }: Props) {
     }
   }
 
+  // FIXME: remove the ternary operator once all tasks have date of creation
+
+  const timeLasting = task.timeStamp
+    ? formatDistance(task.timeStamp, new Date(), {addSuffix: true})
+    : "Time not available";
+
   return (
     <li key={task.id} className="flex flex-nowrap justify-between p-2">
       {isEditing ? (
@@ -49,7 +56,12 @@ export function TaskListItem({ task }: Props) {
           {task.name}
           <div className="flex justify-between">
             <ImportanceSelector task={task} />
-            <StarIcon task={task} />
+            <div className="flex gap-1">
+              <span className="text-gray-500 text-sm" title="Task lasting" >
+                {timeLasting}
+              </span>
+              <StarIcon task={task} />
+            </div>
           </div>
         </span>
       )}

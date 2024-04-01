@@ -3,10 +3,16 @@ import useTasks from "../hooks/useTasks";
 import { TaskListItem } from "./TaskListItem";
 
 const TaskList = () => {
-  const { tasks, areFinishedTasksHidden, importanceFilter } = useTasks();
+  const { tasks, areFinishedTasksHidden, importanceFilter, timeFilterState } =
+    useTasks();
+
+  const tasksSortedByTime = sortTasksByTime({
+    tasks,
+    value: timeFilterState
+  });
 
   const tasksSortedByImportance = sortTasksByImportance({
-    tasks,
+    tasks: tasksSortedByTime,
     value: importanceFilter
   });
 
@@ -44,5 +50,26 @@ function sortTasksByImportance({
     return tasks.sort((a, b) => a.importance - b.importance);
   } else if (value === "descend") {
     return tasks.sort((a, b) => b.importance - a.importance);
+  } else return tasks;
+}
+
+interface SortByTimeProps {
+  tasks: Task[];
+  value: ImportanceFilter;
+}
+
+function sortTasksByTime({ tasks, value }: SortByTimeProps): Task[] {
+  if (value === "ascend") {
+    return tasks.sort(
+      (a, b) =>
+        new Date(a.timeStamp).getTime() -
+        new Date(b.timeStamp).getTime()
+    );
+  } else if (value === "descend") {
+    return tasks.sort(
+      (a, b) =>
+        new Date(b.timeStamp).getTime() -
+        new Date(a.timeStamp).getTime()
+    );
   } else return tasks;
 }

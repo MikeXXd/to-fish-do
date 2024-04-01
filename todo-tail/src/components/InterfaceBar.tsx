@@ -30,7 +30,7 @@ export const InterfaceBar = () => {
       importance: importance,
       star: false,
       done: false,
-      timeOfCreation: new Date().toISOString()
+      timeStamp: new Date()
     };
     addTask(newTask);
     filterByImportance("none");
