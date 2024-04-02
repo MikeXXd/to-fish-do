@@ -11,11 +11,11 @@ interface Props {
 export function ImportanceSelector({ onNewTask, task }: Props) {
   const [value, setValue] = useState(task?.importance || 1);
 
-  const { setImportance, filterByImportance } = useTasks();
+  const { setTaskImportance, filterByImportance } = useTasks();
 
   useEffect(() => {
     if (task && task.importance !== value) {
-      setImportance(task.id, value);
+      setTaskImportance(task.id, value);
     }
   }, [value]);
 

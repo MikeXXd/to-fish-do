@@ -33,13 +33,15 @@ export function TaskListItem({ task }: Props) {
   }
 
   // FIXME: remove the ternary operator once all tasks have date of creation
-
   const timeLasting = task.timeStamp
-    ? formatDistance(task.timeStamp, new Date(), {addSuffix: true})
+    ? formatDistance(task.timeStamp, new Date(), { addSuffix: true })
     : "Time not available";
 
   return (
-    <li key={task.id} className="flex flex-nowrap justify-between p-2">
+    <li
+      key={task.id}
+      className="flex flex-nowrap justify-between p-2 hover:bg-slate-200 "
+    >
       {isEditing ? (
         <input
           ref={editRef}
@@ -51,13 +53,13 @@ export function TaskListItem({ task }: Props) {
         />
       ) : (
         <span
-          className={`${task.done && "line-through whitespace-break-spaces"} me-5 w-full`}
+          className={`${(task.done && "line-through whitespace-break-spaces", task.star && "font-medium")} me-5 w-full`}
         >
           {task.name}
-          <div className="flex justify-between">
+          <div className="flex gap-1 justify-between">
             <ImportanceSelector task={task} />
             <div className="flex gap-1">
-              <span className="text-gray-500 text-sm" title="Task lasting" >
+              <span className="text-gray-500 text-sm" title="Task lasting">
                 {timeLasting}
               </span>
               <StarIcon task={task} />

@@ -24,7 +24,7 @@ interface TasksContext {
   addTask: (task: Task) => void;
   taskDone: (task: Task) => void;
   editTitle: (task: Task, newTitle: string) => void;
-  setImportance: (id: string, importance: number) => void;
+  setTaskImportance: (id: string, importance: number) => void;
   deleteTask: (task: Task) => void;
   filterFinishedTasks: () => void;
   areFinishedTasksHidden: boolean;
@@ -74,7 +74,7 @@ export function TasksProvider({ children }: { children: ReactNode }) {
     setTasks(updatedTasks);
   }
 
-  function setImportance(id: string, importance: number) {
+  function setTaskImportance(id: string, importance: number) {
     const updatedTasks = tasks.map((task) =>
       task.id === id ? { ...task, importance: importance } : task
     );
@@ -108,7 +108,7 @@ export function TasksProvider({ children }: { children: ReactNode }) {
         taskDone,
         deleteTask,
         editTitle,
-        setImportance,
+        setTaskImportance,
         filterFinishedTasks,
         areFinishedTasksHidden,
         arrangeStarForTask,
