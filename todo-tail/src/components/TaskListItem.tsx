@@ -1,5 +1,12 @@
 import { formatDistance } from "date-fns";
-import { Pencil, Save, SquareCheck, Trash2, Undo2 } from "lucide-react";
+import {
+  Pencil,
+  Save,
+  Square,
+  SquareCheckBig,
+  Trash2,
+  Undo2
+} from "lucide-react";
 import { useRef, useState } from "react";
 import { Task } from "../contexts/Task";
 import useTasks from "../hooks/useTasks";
@@ -53,7 +60,7 @@ export function TaskListItem({ task }: Props) {
         />
       ) : (
         <span
-          className={`${(task.done && "line-through whitespace-break-spaces", task.star && "font-medium")} me-5 w-full`}
+          className={`${task.done && "line-through whitespace-break-spaces"} ${task.star && "font-medium"} me-5 w-full`}
         >
           {task.name}
           <div className="flex gap-1 justify-between">
@@ -70,13 +77,23 @@ export function TaskListItem({ task }: Props) {
 
       {!isEditing && (
         <div className="flex flex-nowrap">
-          <button
-            onClick={() => taskDone(task)}
-            className={`${task.done ? "text-green-700" : "text-orange-500"} me-1 hover:scale-125`}
-            title="Mark as done"
-          >
-            <SquareCheck size={24} />
-          </button>
+          {task.done ? (
+            <button
+              onClick={() => taskDone(task)}
+              className="text-green-700 me-1 hover:scale-125"
+              title="Mark as done"
+            >
+              <SquareCheckBig size={24} />
+            </button>
+          ) : (
+            <button
+              onClick={() => taskDone(task)}
+              className="text-orange-700 me-1 hover:scale-125"
+              title="Mark as done"
+            >
+              <Square size={24} />
+            </button>
+          )}
           <button
             onClick={() => setIsEditing(true)}
             className={` me-1 p-2 hover:scale-125`}
