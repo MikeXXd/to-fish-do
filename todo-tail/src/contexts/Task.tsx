@@ -6,9 +6,9 @@ const LOCAL_STORAGE_TASKS = {
   DEFAULT: []
 };
 
-const IMPORTANCE_FILTER_VALUES = ["ascend", "descend", undefined] as const;
+const SORTING_VALUES = ["ascend", "descend", undefined] as const;
 
-export type SortingValues = (typeof IMPORTANCE_FILTER_VALUES)[number];
+export type SortingValues = (typeof SORTING_VALUES)[number];
 
 export interface Task {
   id: string;
