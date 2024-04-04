@@ -1,4 +1,4 @@
-import { ImportanceFilter, Task } from "../contexts/Task";
+import { SortingValues, Task } from "../contexts/Task";
 import useTasks from "../hooks/useTasks";
 import { TaskListItem } from "./TaskListItem";
 
@@ -39,7 +39,7 @@ export default TaskList;
 
 interface SortByImportanceProps {
   tasks: Task[];
-  value: ImportanceFilter;
+  value: SortingValues;
 }
 
 function sortTasksByImportance({
@@ -55,7 +55,7 @@ function sortTasksByImportance({
 
 interface SortByTimeProps {
   tasks: Task[];
-  value: ImportanceFilter;
+  value: SortingValues;
 }
 
 function sortTasksByTime({ tasks, value }: SortByTimeProps): Task[] {

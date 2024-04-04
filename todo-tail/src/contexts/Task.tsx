@@ -6,9 +6,9 @@ const LOCAL_STORAGE_TASKS = {
   DEFAULT: []
 };
 
-const IMPORTANCE_FILTER_VALUES = ["ascend", "descend", "none"] as const;
+const IMPORTANCE_FILTER_VALUES = ["ascend", "descend", undefined] as const;
 
-export type ImportanceFilter = (typeof IMPORTANCE_FILTER_VALUES)[number];
+export type SortingValues = (typeof IMPORTANCE_FILTER_VALUES)[number];
 
 export interface Task {
   id: string;
@@ -29,10 +29,10 @@ interface TasksContext {
   filterFinishedTasks: () => void;
   areFinishedTasksHidden: boolean;
   arrangeStarForTask: (task: Task) => void;
-  filterByImportance: (importance: ImportanceFilter) => void;
-  importanceFilter: ImportanceFilter;
-  filterByTime: (importance: ImportanceFilter) => void;
-  timeFilterState: ImportanceFilter;
+  filterByImportance: (importance: SortingValues) => void;
+  importanceFilter: SortingValues;
+  filterByTime: (importance: SortingValues) => void;
+  timeFilterState: SortingValues;
 }
 
 export const Context = createContext<TasksContext>({} as TasksContext);
@@ -45,9 +45,9 @@ export function TasksProvider({ children }: { children: ReactNode }) {
   const [areFinishedTasksHidden, setAreFinishedTasksHidden] =
     useState<boolean>(false);
   const [importanceFilter, setImportanceFilter] =
-    useState<(typeof IMPORTANCE_FILTER_VALUES)[number]>("none");
+    useState<SortingValues>();
   const [timeFilterState, setTimeFilterState] =
-    useState<(typeof IMPORTANCE_FILTER_VALUES)[number]>("none");
+    useState<SortingValues>();
 
   function addTask(task: Task) {
     setTasks([task, ...tasks]);
@@ -93,10 +93,10 @@ export function TasksProvider({ children }: { children: ReactNode }) {
     );
   }
 
-  function filterByImportance(importance: ImportanceFilter = "none") {
+  function filterByImportance(importance: SortingValues = undefined) {
     setImportanceFilter(importance);
   }
-  function filterByTime(timeState: ImportanceFilter = "none") {
+  function filterByTime(timeState: SortingValues = undefined) {
     setTimeFilterState(timeState);
   }
 

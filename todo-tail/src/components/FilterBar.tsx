@@ -18,7 +18,7 @@ export function FilterBar() {
 
       <div className={`flex gap-3 `}>
         {/* ---Time-Filter-Icon------------------------------------------------------------ */}
-        <FilterIconWrap inactiveWhen={timeFilterState === "none"}>
+        <FilterIconWrap inactiveWhen={!timeFilterState}>
           {
             <FilterDescAscIcon
               currentValue={timeFilterState}
@@ -30,7 +30,7 @@ export function FilterBar() {
           }
         </FilterIconWrap>
         {/* ---Importance-Filter-Icon------------------------------------------------------------ */}
-        <FilterIconWrap inactiveWhen={importanceFilter === "none"}>
+        <FilterIconWrap inactiveWhen={!importanceFilter}>
           <FilterDescAscIcon
             currentValue={importanceFilter}
             onClick={filterByImportance}

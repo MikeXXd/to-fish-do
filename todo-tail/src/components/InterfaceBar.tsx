@@ -33,7 +33,7 @@ export const InterfaceBar = () => {
       timeStamp: new Date()
     };
     addTask(newTask);
-    filterByImportance("none");
+    filterByImportance(undefined);
     reset();
   }
 

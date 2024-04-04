@@ -1,11 +1,11 @@
 import { ReactNode } from "react";
-import { ImportanceFilter } from "../contexts/Task";
+import { SortingValues } from "../contexts/Task";
 
 interface FilterProps {
   children: ReactNode;
   title: string;
-  onClick: (value: ImportanceFilter) => void;
-  currentValue: ImportanceFilter;
+  onClick: (value: SortingValues) => void;
+  currentValue: SortingValues;
 }
 
 export function FilterDescAscIcon({
@@ -16,7 +16,7 @@ export function FilterDescAscIcon({
 }: FilterProps) {
   return (
     <div className="hover:scale-125">
-      {currentValue === "none" && (
+      {!currentValue && (
         <div onClick={() => onClick("descend")} title={title}>
           {children}
         </div>
@@ -33,7 +33,7 @@ export function FilterDescAscIcon({
       {currentValue === "ascend" && (
         <div
           className="rotate-45"
-          onClick={() => onClick("none")}
+          onClick={() => onClick(undefined)}
           title={title}
         >
           {children}
