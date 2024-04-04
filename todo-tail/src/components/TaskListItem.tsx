@@ -2,16 +2,18 @@ import { formatDistance } from "date-fns";
 import {
   Pencil,
   Save,
+  ShieldX,
   Square,
   SquareCheckBig,
   Trash2,
   Undo2
 } from "lucide-react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Task } from "../contexts/Task";
 import useTasks from "../hooks/useTasks";
 import { ImportanceSelector } from "./ImportanceSelector";
 import { StarIcon } from "./StarIcon";
+import { cc } from "../util/cc";
 
 interface Props {
   task: Task;
@@ -19,6 +21,8 @@ interface Props {
 
 export function TaskListItem({ task }: Props) {
   const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [taskIsDeleting, setTaskIsDeleting] = useState<boolean>(false);
+
   const editRef = useRef<HTMLInputElement>(null);
   const { deleteTask, taskDone, editTitle } = useTasks();
 
@@ -28,6 +32,20 @@ export function TaskListItem({ task }: Props) {
       setIsEditing(false);
     }, 100);
   }
+
+  useEffect(() => {
+    if (taskIsDeleting) {
+      const timeoutId = setTimeout(() => {
+        if (taskIsDeleting) {
+          deleteTask(task);
+        }
+      }, 5000);
+
+      return () => {
+        clearTimeout(timeoutId);
+      };
+    }
+  }, [taskIsDeleting, deleteTask, task]);
 
   function handleEdit() {
     const newTitle = editRef.current?.value;
@@ -44,10 +62,18 @@ export function TaskListItem({ task }: Props) {
     ? formatDistance(task.timeStamp, new Date(), { addSuffix: true })
     : "Time not available";
 
+  function handleDeleteTask() {
+    setTaskIsDeleting(true);
+  }
+
   return (
     <li
       key={task.id}
-      className="flex flex-nowrap justify-between p-2 hover:bg-slate-200 "
+      className={cc(
+        " flex justify-between p-2",
+        taskIsDeleting ? "hover:bg-red-300" : "hover:bg-slate-200",
+        taskIsDeleting && "bg-red-200 animate-pulse"
+      )}
     >
       {isEditing ? (
         <input
@@ -58,9 +84,17 @@ export function TaskListItem({ task }: Props) {
           className=" px-2 w-full me-2 rounded-md"
           onBlur={handleOnBlur}
         />
+      ) : taskIsDeleting ? (
+        <span className="font-bold text-ellipsis overflow-hidden">
+          !!! Deleting task !!! - {task.name}
+        </span>
       ) : (
         <span
-          className={`${task.done && "line-through whitespace-break-spaces"} ${task.star && "font-medium"} me-5 w-full`}
+          className={cc(
+            task.done && "line-through whitespace-break-spaces",
+            task.star && "font-medium",
+            "me-5 w-full text-ellipsis overflow-hidden"
+          )}
         >
           {task.name}
           <div className="flex gap-1 justify-between">
@@ -75,7 +109,7 @@ export function TaskListItem({ task }: Props) {
         </span>
       )}
 
-      {!isEditing && (
+      {!isEditing && !taskIsDeleting && (
         <div className="flex flex-nowrap">
           {task.done ? (
             <button
@@ -103,11 +137,24 @@ export function TaskListItem({ task }: Props) {
           </button>
 
           <button
-            onClick={() => deleteTask(task)}
+            onClick={handleDeleteTask}
             className={`text-gray-800  hover:scale-125`}
             title="Delete task"
           >
             <Trash2 size={24} />
+          </button>
+        </div>
+      )}
+
+      {/* --Task-Deleting-mode-for-buttons----------------------------------------- */}
+      {taskIsDeleting && (
+        <div className=" flex justify-between">
+          <button
+            onClick={() => setTaskIsDeleting(false)}
+            className="`text-red-700 hover:scale-125"
+            title="Cancel deleting"
+          >
+            <ShieldX size={24} />{" "}
           </button>
         </div>
       )}
@@ -124,7 +171,7 @@ export function TaskListItem({ task }: Props) {
           </button>
           <button
             onClick={() => setIsEditing(false)}
-            className={` me-1 hover:scale-125`}
+            className="me-1 hover:scale-125"
             title="Cancel editing"
           >
             <Undo2 size={24} />
