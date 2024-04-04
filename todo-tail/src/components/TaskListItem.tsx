@@ -1,4 +1,5 @@
-import { formatDistance } from "date-fns";
+/* eslint-disable react-hooks/exhaustive-deps */
+import { differenceInSeconds, formatDistance } from "date-fns";
 import {
   Pencil,
   Save,
@@ -22,6 +23,12 @@ interface Props {
 export function TaskListItem({ task }: Props) {
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [taskIsDeleting, setTaskIsDeleting] = useState<boolean>(false);
+  const [isNewTask, setIsNewTask] = useState<boolean>(() => {
+    if (differenceInSeconds(new Date(), task.timeStamp) < 5) {
+      return true;
+    }
+    return false;
+  });
 
   const editRef = useRef<HTMLInputElement>(null);
   const { deleteTask, taskDone, editTitle } = useTasks();
@@ -45,7 +52,19 @@ export function TaskListItem({ task }: Props) {
         clearTimeout(timeoutId);
       };
     }
-  }, [taskIsDeleting, deleteTask, task]);
+  }, [taskIsDeleting]);
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (isNewTask) {
+        setIsNewTask(false);
+      }
+    }, 2000);
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  });
 
   function handleEdit() {
     const newTitle = editRef.current?.value;
@@ -72,7 +91,8 @@ export function TaskListItem({ task }: Props) {
       className={cc(
         " flex justify-between p-2",
         taskIsDeleting ? "hover:bg-red-300" : "hover:bg-slate-200",
-        taskIsDeleting && "bg-red-200 animate-pulse"
+        taskIsDeleting && "bg-red-200 animate-pulse",
+        isNewTask && "bg-green-200 animate-pulse"
       )}
     >
       {/* --Normal-mode------------------------------------------------ */}
