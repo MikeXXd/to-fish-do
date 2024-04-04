@@ -75,108 +75,128 @@ export function TaskListItem({ task }: Props) {
         taskIsDeleting && "bg-red-200 animate-pulse"
       )}
     >
-      {isEditing ? (
-        <input
-          ref={editRef}
-          type="text"
-          defaultValue={task.name}
-          autoFocus
-          className="bg-slate-100 px-2 w-full me-2 rounded-md"
-          onBlur={handleOnBlur}
-        />
-      ) : taskIsDeleting ? (
-        <span className="font-bold text-ellipsis overflow-hidden">
-          !!! Deleting task !!! - {task.name}
-        </span>
-      ) : (
-        <span
-          className={cc(
-            task.done && "line-through whitespace-break-spaces",
-            task.star && "font-medium",
-            "me-5 w-full text-ellipsis overflow-hidden"
-          )}
-        >
-          {task.name}
-          <div className="flex gap-1 justify-between">
-            <ImportanceSelector task={task} />
-            <div className="flex gap-1">
-              <span className="text-gray-500 text-sm" title="Task lasting">
-                {timeLasting}
-              </span>
-              <StarIcon task={task} />
-            </div>
-          </div>
-        </span>
-      )}
-
+      {/* --Normal-mode------------------------------------------------ */}
       {!isEditing && !taskIsDeleting && (
-        <div className="flex flex-nowrap">
-          {task.done ? (
-            <button
-              onClick={() => taskDone(task)}
-              className="text-green-700 me-1 hover:scale-125"
-              title="Mark as done"
-            >
-              <SquareCheckBig size={24} />
-            </button>
-          ) : (
-            <button
-              onClick={() => taskDone(task)}
-              className="text-orange-700 me-1 hover:scale-125"
-              title="Mark as done"
-            >
-              <Square size={24} />
-            </button>
-          )}
-          <button
-            onClick={() => setIsEditing(true)}
-            className={` me-1 p-2 hover:scale-125`}
-            title="Edit task"
+        <>
+          <span
+            className={cc(
+              task.done && "line-through whitespace-break-spaces",
+              task.star && "font-medium",
+              "me-5 w-full text-ellipsis overflow-hidden"
+            )}
           >
-            <Pencil size={24} />
-          </button>
+            {task.name}
+            <div className="flex gap-1 justify-between">
+              <ImportanceSelector task={task} />
+              <div className="flex gap-1">
+                <span className="text-gray-500 text-sm" title="Task lasting">
+                  {timeLasting}
+                </span>
+                <StarIcon task={task} />
+              </div>
+            </div>
+          </span>
+          <div className="flex flex-nowrap">
+            {task.done ? (
+              <button
+                onClick={() => taskDone(task)}
+                className="text-green-700 me-1 hover:scale-125"
+                title="Mark as done"
+              >
+                <SquareCheckBig size={24} />
+              </button>
+            ) : (
+              <button
+                onClick={() => taskDone(task)}
+                className="text-orange-700 me-1 hover:scale-125"
+                title="Mark as done"
+              >
+                <Square size={24} />
+              </button>
+            )}
+            <button
+              onClick={() => setIsEditing(true)}
+              className={` me-1 p-2 hover:scale-125`}
+              title="Edit task"
+            >
+              <Pencil size={24} />
+            </button>
 
-          <button
-            onClick={handleDeleteTask}
-            className={`text-gray-800  hover:scale-125`}
-            title="Delete task"
-          >
-            <Trash2 size={24} />
-          </button>
-        </div>
+            <button
+              onClick={handleDeleteTask}
+              className={`text-gray-800  hover:scale-125`}
+              title="Delete task"
+            >
+              <Trash2 size={24} />
+            </button>
+          </div>
+        </>
       )}
 
-      {/* --Task-Deleting-mode-for-buttons----------------------------------------- */}
+      {/* --Task-Deleting-mode------------------------------------------ */}
       {taskIsDeleting && (
-        <div className=" flex justify-between">
-          <button
-            onClick={() => setTaskIsDeleting(false)}
-            className="`text-red-700 hover:scale-125"
-            title="Cancel deleting"
-          >
-            <ShieldX size={24} />{" "}
-          </button>
-        </div>
+        <>
+          <span className="font-bold text-ellipsis overflow-hidden">
+            !!! Deleting task !!! - {task.name}
+          </span>
+          <div className=" flex justify-between">
+            <button
+              onClick={() => setTaskIsDeleting(false)}
+              className="`text-red-700 hover:scale-125"
+              title="Cancel deleting"
+            >
+              <ShieldX size={24} />{" "}
+            </button>
+          </div>
+        </>
       )}
 
-      {/* --Title-Editing-mode-for-buttons----------------------------------------- */}
+      {/* --Title-Editing-mode----------------------------------------- */}
       {isEditing && (
-        <div className="flex flex-nowrap">
-          <button
-            onClick={handleEdit}
-            className={` me-1 p-2 hover:scale-125`}
-            title="Save edited title"
+        <>
+          <input
+            ref={editRef}
+            type="text"
+            defaultValue={task.name}
+            autoFocus
+            className="bg-slate-100 px-2 w-full me-2 rounded-md"
+            onBlur={handleOnBlur}
+          />
+          <span
+            className={cc(
+              task.done && "line-through whitespace-break-spaces",
+              task.star && "font-medium",
+              "me-5 w-full text-ellipsis overflow-hidden"
+            )}
           >
-            <Save size={24} />
-          </button>
-          <button
-            onClick={() => setIsEditing(false)}
-            className="me-1 hover:scale-125"
-            title="Cancel editing"
-          >
-            <Undo2 size={24} />
-          </button>
-        </div>
+            {task.name}
+            <div className="flex gap-1 justify-between">
+              <ImportanceSelector task={task} />
+              <div className="flex gap-1">
+                <span className="text-gray-500 text-sm" title="Task lasting">
+                  {timeLasting}
+                </span>
+                <StarIcon task={task} />
+              </div>
+            </div>
+          </span>
+          <div className="flex flex-nowrap">
+            <button
+              onClick={handleEdit}
+              className={` me-1 p-2 hover:scale-125`}
+              title="Save edited title"
+            >
+              <Save size={24} />
+            </button>
+            <button
+              onClick={() => setIsEditing(false)}
+              className="me-1 hover:scale-125"
+              title="Cancel editing"
+            >
+              <Undo2 size={24} />
+            </button>
+          </div>
+        </>
       )}
     </li>
   );

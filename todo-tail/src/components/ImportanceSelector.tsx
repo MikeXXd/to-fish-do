@@ -24,13 +24,13 @@ export function ImportanceSelector({ onNewTask, task }: Props) {
   }, [value, onNewTask]);
 
   function handleAddImportance() {
-    filterByImportance("none");
+    filterByImportance(undefined);
     if (value <= 4) setValue(value + 1);
     else return;
   }
 
   function handleLessImportance() {
-    filterByImportance("none");
+    filterByImportance(undefined);
     if (value > 1) setValue(value - 1);
     else return;
   }
