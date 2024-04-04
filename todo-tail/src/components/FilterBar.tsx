@@ -34,7 +34,7 @@ export function FilterBar({ searchName, onChange }: FilterBarProps) {
                 onChange={(e) => onChange(e.target?.value)}
                 name="search"
                 id="search"
-                className="block w-full rounded-md border-1 py-1 px-2 me-2 text-gray-900 sm:text-sm sm:leading-6"
+                className="bg-slate-100 block w-full rounded-md border-1 py-1 px-2 me-2 text-gray-900 sm:text-sm sm:leading-6"
               />
               <div className="absolute inset-y-0 right-0 flex items-center">
                 <label htmlFor="currency" className="sr-only">

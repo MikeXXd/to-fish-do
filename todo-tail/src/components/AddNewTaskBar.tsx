@@ -13,7 +13,7 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>;
 
-export const InterfaceBar = () => {
+export const AddNewTaskBar = () => {
   const { addTask, filterByImportance } = useTasks();
   const [importance, setImportance] = useState<number>(1);
   const {
@@ -54,7 +54,7 @@ export const InterfaceBar = () => {
           type="text"
           id="task"
           placeholder="add new task"
-          className=" p-2 max-w-[800px] min-w-[300px] rounded-md"
+          className="bg-slate-100 p-2 max-w-[800px] min-w-[300px] rounded-md"
         />
         {errors.name && <p>{errors.name.message}</p>}
       </label>
@@ -69,4 +69,4 @@ export const InterfaceBar = () => {
   );
 };
 
-export default InterfaceBar;
+export default AddNewTaskBar;

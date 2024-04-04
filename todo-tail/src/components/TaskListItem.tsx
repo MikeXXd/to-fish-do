@@ -81,7 +81,7 @@ export function TaskListItem({ task }: Props) {
           type="text"
           defaultValue={task.name}
           autoFocus
-          className=" px-2 w-full me-2 rounded-md"
+          className="bg-slate-100 px-2 w-full me-2 rounded-md"
           onBlur={handleOnBlur}
         />
       ) : taskIsDeleting ? (
