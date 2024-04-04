@@ -5,7 +5,7 @@ interface FilterIconWrapProps {
   inactiveWhen: boolean | undefined | null;
 }
 
-export function FilterIconWrap({
+export function FilterComponentWrap({
   children,
   inactiveWhen
 }: FilterIconWrapProps) {
