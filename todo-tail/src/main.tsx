@@ -1,13 +1,11 @@
-import React from "react";
+import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App.tsx";
+import { RouterProvider } from "react-router-dom";
 import "./index.css";
-import { TasksProvider } from "./contexts/Task.tsx";
+import { routes } from "./routes.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <TasksProvider>
-    <React.StrictMode>
-      <App />
-    </React.StrictMode>
-  </TasksProvider>
+  <StrictMode>
+    <RouterProvider router={routes} />
+  </StrictMode>
 );

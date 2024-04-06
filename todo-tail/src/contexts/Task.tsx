@@ -44,10 +44,8 @@ export function TasksProvider({ children }: { children: ReactNode }) {
   );
   const [areFinishedTasksHidden, setAreFinishedTasksHidden] =
     useState<boolean>(false);
-  const [importanceFilter, setImportanceFilter] =
-    useState<SortingValues>();
-  const [timeFilterState, setTimeFilterState] =
-    useState<SortingValues>();
+  const [importanceFilter, setImportanceFilter] = useState<SortingValues>();
+  const [timeFilterState, setTimeFilterState] = useState<SortingValues>();
 
   function addTask(task: Task) {
     setTasks([task, ...tasks]);

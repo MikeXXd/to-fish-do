@@ -6,7 +6,7 @@ interface TaskListProps {
   searchName: string;
 }
 
-const TaskList = ({searchName}: TaskListProps) => {
+const TaskList = ({ searchName }: TaskListProps) => {
   const { tasks, areFinishedTasksHidden, importanceFilter, timeFilterState } =
     useTasks();
 
@@ -31,8 +31,8 @@ const TaskList = ({searchName}: TaskListProps) => {
     : starFirstTasksSorted;
 
   return (
-    <div className="container p-4 overflow-auto">
-      <ul className="list-none p-2 divide-y-2 divide-dashed divide-slate-500 rounded-md">
+    <div className="container overflow-auto px-auto">
+      <ul className="list-none divide-y-2 divide-dashed divide-slate-500 rounded-md">
         {filteredTasks.map((task) => (
           <TaskListItem key={task.id} task={task} />
         ))}
