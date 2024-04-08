@@ -1,36 +1,65 @@
-import { FishSymbol, Menu } from "lucide-react";
+import { FishSymbol, Menu, X } from "lucide-react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
+import { cc } from "../util/cc";
+
+const LINKS = [
+  { name: "Tasks", path: "/" },
+  { name: "Rituals", path: "/rituals" },
+  { name: "Statistics", path: "/statistics" },
+  { name: "About", path: "/about" }
+] as const;
 
 function NavBar() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   return (
-    <nav className="bg-gray-500 p-4 flex justify-between">
-      <div className="flex gap-2 items-center">
-        <FishSymbol size={29} color="red" />
-        <div className="text-white text-2xl font-bold">Like-Fish-DO</div>
-      </div>
+    <div className="flex border-gray-500 bg-gray-500 text-slate-200">
+      <nav className="container bg-gray-500 p-4 flex justify-between items-center min-w-[300px] w-full  max-w-[850px]">
+        {/*----Title------------------------- */}
+        <div className="flex gap-2 items-center">
+          <FishSymbol size={29} color="red" />
+          <div className="text-slate-200 text-2xl font-bold">Like-Fish-DO</div>
+        </div>
+        {/* ----navigation--------------------------- */}
+        <div className="hidden sm:flex space-x-4 text-xl">
+          {LINKS.map((link) => (
+            <Link to={link.path} className=" text-gray-200 hover:text-white">
+              {link.name}
+            </Link>
+          ))}
+        </div>
 
-      {/*Menu Hamburg*/}
-      <div className="md:hidden">
-        <button className="text-white">
-          <Menu size={24} />
-        </button>
-      </div>
-
-      <div className="hidden md:flex space-x-4 text-xl">
-        <Link to="/" className="text-white">
-          Tasks
-        </Link>
-        <Link to="/rituals" className="text-white">
-          Rituals
-        </Link>
-        <Link to="/statistics" className="text-white">
-          Statistics
-        </Link>
-        <Link to="/about" className="text-white">
-          About
-        </Link>
-      </div>
-    </nav>
+        {/*Menu Hamburg*/}
+        <div className="sm:hidden relative ">
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="hover:text-white text-gray-200"
+          >
+            {isMenuOpen ? <X size={24} strokeWidth="3" /> : <Menu size={24} />}
+          </button>
+          <div
+            className={cc(
+              isMenuOpen ? "flex" : "hidden",
+              "absolute right-0 w-32 origin-top-right flex-col bg-gray-500 border-2 border-gray-200 divide-y divide-gray-400 rounded-md  focus:outline-none "
+            )}
+            role="menu"
+            aria-orientation="vertical"
+            aria-labelledby="options-menu"
+          >
+            {LINKS.map((link) => (
+              <Link
+                to={link.path}
+                className=" hover:text-white hover:bg-slate-600   focus:bg-slate-700 py-1 px-2"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                {link.name}
+              </Link>
+            ))}
+          </div>
+        </div>
+      </nav>
+    </div>
   );
 }
 
