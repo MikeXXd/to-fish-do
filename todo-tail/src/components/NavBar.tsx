@@ -14,8 +14,8 @@ function NavBar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <div className="flex border-gray-500 bg-gray-500 text-slate-200">
-      <nav className="container bg-gray-500 p-4 flex justify-between items-center min-w-[300px] w-full  max-w-[850px]">
+    <div className="sticky top-0 z-10 flex border-gray-500 bg-gray-500 text-slate-200">
+      <nav className=" container bg-gray-500 p-4 flex justify-between items-center min-w-[300px] w-full  max-w-[850px]">
         {/*----Title------------------------- */}
         <div className="flex gap-2 items-center">
           <FishSymbol size={29} color="red" />
