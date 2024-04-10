@@ -22,18 +22,23 @@ interface Props {
 }
 
 export function TaskListItem({ task }: Props) {
+  const { deleteTask, taskDone, editTitle } = useTasks();
   const [isEditing, setIsEditing] = useState<boolean>(false);
-  const [taskIsDeleting, setTaskIsDeleting] = useState<boolean>(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isTaskDeleting, setIsTaskDeleteing] = useState<boolean>(false);
+  const [isTaskChanging, setIsTaskChanging] = useState<boolean>(false);
+  const [lastStateOfStar, setLastStateOfStar] = useState<boolean>(task.star); // needed for comparison if start state change to trigger useEffect
   const [isNewTask, setIsNewTask] = useState<boolean>(() => {
     if (differenceInSeconds(new Date(), task.timeStamp) < 5) {
       return true;
     }
     return false;
   });
-
   const editRef = useRef<HTMLInputElement>(null);
-  const { deleteTask, taskDone, editTitle } = useTasks();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const timeLasting = formatDistance(task.timeStamp, new Date(), {
+    addSuffix: true
+  });
 
   function handleOnBlur() {
     // setTimeout is here to delay the onBlur event so the buttons click event can be triggered first
@@ -42,11 +47,18 @@ export function TaskListItem({ task }: Props) {
     }, 100);
   }
 
+  useEffect(() => {
+    if (lastStateOfStar !== task.star) {
+      setLastStateOfStar(task.star);
+      setIsTaskChanging(true);
+    }
+  }, [task.star]);
+
   // deleting task after 5 seconds
   useEffect(() => {
-    if (taskIsDeleting) {
+    if (isTaskDeleting) {
       const timeoutId = setTimeout(() => {
-        if (taskIsDeleting) {
+        if (isTaskDeleting) {
           deleteTask(task);
         }
       }, 5000);
@@ -55,7 +67,22 @@ export function TaskListItem({ task }: Props) {
         clearTimeout(timeoutId);
       };
     }
-  }, [taskIsDeleting]);
+  }, [isTaskDeleting]);
+
+  //task state (done, star) changing
+  useEffect(() => {
+    if (isTaskChanging) {
+      const timeoutId = setTimeout(() => {
+        if (isTaskChanging) {
+          setIsTaskChanging(false);
+        }
+      }, 2000);
+
+      return () => {
+        clearTimeout(timeoutId);
+      };
+    }
+  }, [isTaskChanging]);
 
   // automatically closing menu spread icons
   useEffect(() => {
@@ -91,16 +118,12 @@ export function TaskListItem({ task }: Props) {
       editTitle(task, newTitle);
       setIsEditing(false);
       setIsMenuOpen(false);
+      setIsTaskChanging(true);
     }
   }
 
-  // FIXME: remove the ternary operator once all tasks have date of creation
-  const timeLasting = task.timeStamp
-    ? formatDistance(task.timeStamp, new Date(), { addSuffix: true })
-    : "Time not available";
-
   function handleDeleteTask() {
-    setTaskIsDeleting(true);
+    setIsTaskDeleteing(true);
     setIsMenuOpen(false);
   }
 
@@ -109,13 +132,16 @@ export function TaskListItem({ task }: Props) {
       key={task.id}
       className={cc(
         " flex justify-between p-2",
-        taskIsDeleting ? "hover:bg-red-300" : "hover:bg-slate-200",
-        taskIsDeleting && "bg-red-200 animate-pulse",
-        isNewTask && "bg-green-200 animate-pulse"
+        isTaskDeleting ? "hover:bg-red-300" : "hover:bg-slate-200",
+        isTaskDeleting && "bg-red-200 animate-pulse",
+        isNewTask && "bg-green-200 animate-pulse",
+        isNewTask ? "hover:bg-green-200" : "hover:bg-slate-200",
+        isTaskChanging && "bg-yellow-300 animate-pulse",
+        isTaskChanging ? "hover:bg-yellow-300" : "hover:bg-slate-200"
       )}
     >
       {/* --Normal-mode------------------------------------------------ */}
-      {!isEditing && !taskIsDeleting && (
+      {!isEditing && !isTaskDeleting && (
         <>
           <span
             className={cc(
@@ -138,7 +164,10 @@ export function TaskListItem({ task }: Props) {
           <div className="hidden sm:flex flex-nowrap">
             {task.done ? (
               <button
-                onClick={() => taskDone(task)}
+                onClick={() => {
+                  taskDone(task);
+                  setIsTaskChanging(true);
+                }}
                 className="text-green-700 me-1 hover:scale-125"
                 title="Mark as done"
               >
@@ -146,7 +175,10 @@ export function TaskListItem({ task }: Props) {
               </button>
             ) : (
               <button
-                onClick={() => taskDone(task)}
+                onClick={() => {
+                  taskDone(task);
+                  setIsTaskChanging(true);
+                }}
                 className="text-orange-700 me-1 hover:scale-125"
                 title="Mark as done"
               >
@@ -188,6 +220,7 @@ export function TaskListItem({ task }: Props) {
                 <button
                   onClick={() => {
                     taskDone(task);
+                    setIsTaskChanging(true);
                     setIsMenuOpen(false);
                   }}
                   className="text-green-700 hover:scale-125"
@@ -199,6 +232,7 @@ export function TaskListItem({ task }: Props) {
                 <button
                   onClick={() => {
                     taskDone(task);
+                    setIsTaskChanging(true);
                     setIsMenuOpen(false);
                   }}
                   className="text-orange-700 hover:scale-125"
@@ -230,14 +264,14 @@ export function TaskListItem({ task }: Props) {
       )}
 
       {/* ----Task-Deleting-mode------------------------------------------ */}
-      {taskIsDeleting && (
+      {isTaskDeleting && (
         <>
           <span className="font-bold text-ellipsis overflow-hidden">
             !!! Deleting task !!! - {task.name}
           </span>
           <div className=" flex justify-between">
             <button
-              onClick={() => setTaskIsDeleting(false)}
+              onClick={() => setIsTaskDeleteing(false)}
               className="`text-red-700 hover:scale-125"
               title="Cancel deleting"
             >
