@@ -43,6 +43,8 @@ const TaskList = ({ searchName }: TaskListProps) => {
 
 export default TaskList;
 
+
+// --supporting functions------------------------------------------------
 interface SortByImportanceProps {
   tasks: Task[];
   value: SortingValues;
