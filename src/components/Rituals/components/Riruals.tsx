@@ -1,27 +1,12 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { FieldValues, useForm } from "react-hook-form";
-import { z } from "zod";
 import Modal from "../../Modal";
 import TitlePlusBtn from "../../TitlePlusBtn";
+import { IMPORTANCE, RitualFormData, ritualSchema } from "../constants";
 import { Ritual } from "../contexts/Ritual";
 import useRituals from "../hooks/useRituals";
 import RitualsList from "./RitualsList";
-
-const IMPORTANCE = ["low", "medium", "high"] as const;
-
-const schema = z.object({
-  title: z
-    .string()
-    .min(3, { message: "Title must have at least 3 characters" })
-    .max(21, { message: "Title must have at most 32 characters" }),
-  description: z
-    .string()
-    .min(3, { message: "Description must have at least 3 characters" }),
-  importance: z.union([z.enum(IMPORTANCE), z.null()]).nullable()
-});
-
-type FormData = z.infer<typeof schema>;
 
 export function Rituals() {
   const { addRitual } = useRituals();
@@ -31,7 +16,7 @@ export function Rituals() {
     handleSubmit,
     formState: { errors },
     reset
-  } = useForm<FormData>({ resolver: zodResolver(schema) });
+  } = useForm<RitualFormData>({ resolver: zodResolver(ritualSchema) });
 
   function onSubmit(data: FieldValues) {
     const newRitual: Ritual = {

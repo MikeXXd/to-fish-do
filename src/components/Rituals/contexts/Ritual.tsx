@@ -54,7 +54,7 @@ interface RitualContext {
   addRitual: (ritual: Ritual) => void;
   deleteRitual: (ritual: Ritual) => void;
   // taskDone: (ritual: Ritual) => void;
-  // editTitle: (ritual: Ritual, newTitle: string) => void;
+  editRitual: (ritual: Ritual) => void;
   // setTaskImportance: (id: string, importance: number) => void;
   // filterFinishedTasks: () => void;
   // areFinishedTasksHidden: boolean;
@@ -95,12 +95,12 @@ export function RitualsProvider({ children }: { children: ReactNode }) {
     setRituals(rituals.filter((ritual) => ritual.id !== DeleteTask.id));
   }
 
-  // function editTitle(updatingTask: Ritual, newTitle: string) {
-  //   const updatedTasks = rituals.map((ritual) =>
-  //     ritual.id === updatingTask.id ? { ...ritual, name: newTitle } : ritual
-  //   );
-  //   setRituals(updatedTasks);
-  // }
+  function editRitual(editedRitual: Ritual) {
+    const updatedTasks = rituals.map((ritual) =>
+      ritual.id === editedRitual.id ? editedRitual : ritual
+    );
+    setRituals(updatedTasks);
+  }
 
   // function setTaskImportance(id: string, importance: number) {
   //   const updatedTasks = rituals.map((ritual) =>
@@ -133,9 +133,8 @@ export function RitualsProvider({ children }: { children: ReactNode }) {
       value={{
         rituals,
         addRitual,
-        deleteRitual
-        // taskDone,
-        // editTitle,
+        deleteRitual,
+        editRitual
         // setTaskImportance,
         // filterFinishedTasks,
         // areFinishedTasksHidden,
