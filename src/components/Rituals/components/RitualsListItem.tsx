@@ -15,27 +15,30 @@ const ICON_SIZE = 27;
 
 export default function RitualsListItem({ ritual }: { ritual: Ritual }) {
   const [isRitualMenuOpen, setIsRitualMenuOpen] = useState(false);
-  const [isRitualDeleting, setIsRitualDeleting] = useState(false);
+  const [isRitualDeleting, setIsRitualDeleting] = useState(false); // showing JSX deleting state
+  const [isCursorInThisElement, setIsCursorInThisElement] = useState(false); //for closing menu
   const { deleteRitual } = useRituals();
 
-  // --automatically closing open menu afer 7s
+  console.log("isCursorInThisElement", isCursorInThisElement);
+
+  // --automatically closing menu 2s after mouseLeave
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      if (isRitualMenuOpen) {
+      if (isRitualMenuOpen && !isCursorInThisElement) {
         setIsRitualMenuOpen(false);
       }
-    }, 7000);
+    }, 2000);
 
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [isRitualMenuOpen]);
+  }, [isRitualMenuOpen, isCursorInThisElement]);
 
   // --JSX--deleting-state---------------------------------------------------------
   if (isRitualDeleting) {
     return (
       <li className="mx-2 bg-red-200 rounded-md hover:bg-red-300 transition-all border-red-500 border-2">
-        <div className="flex justify-between p-2  mx-auto font-semibold text-lg ">
+        <div className="flex justify-between gap-5 p-2  mx-auto font-semibold text-lg ">
           <button
             onClick={() => deleteRitual(ritual)}
             className="hover:scale-125"
@@ -63,6 +66,8 @@ export default function RitualsListItem({ ritual }: { ritual: Ritual }) {
   else
     return (
       <li
+        onMouseEnter={() => setIsCursorInThisElement(true)} // for closing menu
+        onMouseLeave={() => setIsCursorInThisElement(false)} // for closing menu
         className={cc(
           "grid grid-cols-10 gap-2 mx-2 bg-slate-200 rounded-md hover:bg-slate-100 transition-all",
           isRitualMenuOpen
@@ -71,7 +76,7 @@ export default function RitualsListItem({ ritual }: { ritual: Ritual }) {
         )}
       >
         {/* --left-side---title-------------------------------- */}
-        <div className=" p-2 col-span-8 sm:col-span-4 md:col-span-3 mx-auto font-semibold text-lg ">
+        <div className=" p-2 col-span-8 sm:col-span-4 md:col-span-3 mx-auto font-semibold text-2xl sm:text-lg">
           {ritual.title}
         </div>{" "}
         {/* ----right-side---description and icons------------------------------ */}

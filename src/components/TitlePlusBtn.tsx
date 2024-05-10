@@ -8,7 +8,7 @@ interface TitlePlusBtnProps {
 export default function TitlePlusBtn({ title, onClick }: TitlePlusBtnProps) {
   return (
     <div className="relative">
-      <h1 className=" text-3xl font-bold">{title}</h1>
+      <h1 className="mt-6 text-4xl sm:text-3xl font-bold">{title}</h1>
 
       <button
         onClick={onClick}
