@@ -42,6 +42,7 @@ export default function RitualsListItem({ ritual }: { ritual: Ritual }) {
           <button
             onClick={() => deleteRitual(ritual)}
             className="hover:scale-125"
+            title="Delete Ritual"
           >
             <Trash2 size={ICON_SIZE} />
           </button>
@@ -52,7 +53,7 @@ export default function RitualsListItem({ ritual }: { ritual: Ritual }) {
             <button
               onClick={() => setIsRitualDeleting(false)}
               className="`text-red-700 hover:scale-125"
-              title="Cancel deleting"
+              title="Cancel Deleting"
             >
               <ShieldX size={ICON_SIZE} />{" "}
             </button>
