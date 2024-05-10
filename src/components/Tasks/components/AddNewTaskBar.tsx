@@ -5,7 +5,7 @@ import { FieldValues, useForm } from "react-hook-form";
 import { z } from "zod";
 import { Task } from "../contexts/Task";
 import useTasks from "../hooks/useTasks";
-import { ImportanceSelector } from "./ImportanceSelector";
+import { ImportanceSelector } from "../../ImportanceSelector";
 
 const schema = z.object({
   name: z.string().min(3, { message: "Title must have at least 3 characters" })

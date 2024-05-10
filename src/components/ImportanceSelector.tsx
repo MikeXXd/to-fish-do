@@ -1,7 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { FishSymbol } from "lucide-react";
 import { useEffect, useState } from "react";
-import useTasks from "../hooks/useTasks";
-import { Task } from "../contexts/Task";
+import useTasks from "./Tasks/hooks/useTasks";
+import { Task } from "./Tasks/contexts/Task";
 
 interface Props {
   onNewTask?: (importance: number) => void;

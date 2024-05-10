@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { AddNewTaskBar } from "./components/AddNewTaskBar";
-import { FilterBar } from "./components/FilterBar";
-import TaskList from "./components/TaskList";
-import { TasksProvider } from "./contexts/Task";
+import { AddNewTaskBar } from "./AddNewTaskBar";
+import { FilterBar } from "./FilterBar";
+import TaskList from "./TaskList";
+import { TasksProvider } from "../contexts/Task";
 
-const App = () => {
+export default function Tasks() {
   const [search, setSearch] = useState<string>("");
 
   return (
@@ -18,6 +18,4 @@ const App = () => {
       </div>
     </div>
   );
-};
-
-export default App;
+}

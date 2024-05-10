@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { SortingValues } from "../contexts/Task";
+import { SortingValues } from "./Tasks/contexts/Task";
 
 interface FilterProps {
   children: ReactNode;

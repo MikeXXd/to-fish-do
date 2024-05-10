@@ -1,5 +1,5 @@
 import { ReactNode, createContext, useState } from "react";
-import { useLocalStorage } from "../hooks/useLocalStorage";
+import { useLocalStorage } from "../../../hooks/useLocalStorage";
 
 const LOCAL_STORAGE_TASKS = {
   KEY: "taskies",
@@ -17,6 +17,7 @@ export interface Task {
   done: boolean;
   star: boolean;
   timeStamp: Date;
+  // finishedAt: Date;
 }
 
 interface TasksContext {

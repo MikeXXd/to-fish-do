@@ -32,7 +32,7 @@ const TaskList = ({ searchName }: TaskListProps) => {
 
   return (
     <div className="container overflow-auto px-auto">
-      <ul className="list-none divide-y-2 divide-dashed divide-slate-500 rounded-md">
+      <ul className="list-none divide-y-2 divide-dashed divide-slate-500 rounded-md transition-all ease-in-out duration-300">
         {filteredTasks.map((task) => (
           <TaskListItem key={task.id} task={task} />
         ))}
@@ -42,7 +42,6 @@ const TaskList = ({ searchName }: TaskListProps) => {
 };
 
 export default TaskList;
-
 
 // --supporting functions------------------------------------------------
 interface SortByImportanceProps {

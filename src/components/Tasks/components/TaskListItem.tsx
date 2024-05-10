@@ -13,8 +13,8 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { Task } from "../contexts/Task";
 import useTasks from "../hooks/useTasks";
-import { cc } from "../util/cc";
-import { ImportanceSelector } from "./ImportanceSelector";
+import { cc } from "../../../util/cc";
+import { ImportanceSelector } from "../../ImportanceSelector";
 import { StarIcon } from "./StarIcon";
 
 interface Props {
@@ -53,21 +53,6 @@ export function TaskListItem({ task }: Props) {
       setIsTaskChanging(true);
     }
   }, [task.star]);
-
-  // deleting task after 5 seconds
-  useEffect(() => {
-    if (isTaskDeleting) {
-      const timeoutId = setTimeout(() => {
-        if (isTaskDeleting) {
-          deleteTask(task);
-        }
-      }, 5000);
-
-      return () => {
-        clearTimeout(timeoutId);
-      };
-    }
-  }, [isTaskDeleting]);
 
   //task state (done, star) changing
   useEffect(() => {
@@ -266,8 +251,11 @@ export function TaskListItem({ task }: Props) {
       {/* ----Task-Deleting-mode------------------------------------------ */}
       {isTaskDeleting && (
         <>
-          <span className="font-bold text-ellipsis overflow-hidden">
-            !!! Deleting task !!! - {task.name}
+          <button onClick={() => deleteTask(task)} className="hover:scale-125">
+            <Trash2 size={24} />
+          </button>
+          <span className="font-bold text-ellipsis overflow-hidden flex align-middle">
+            {task.name}
           </span>
           <div className=" flex justify-between">
             <button
