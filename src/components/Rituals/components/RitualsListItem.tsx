@@ -6,7 +6,7 @@ import {
   BarChart4,
   ShieldX
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Ritual } from "../contexts/Ritual";
 import useRituals from "../hooks/useRituals";
 import { cc } from "../../../util/cc";
@@ -21,8 +21,10 @@ export default function RitualsListItem({ ritual }: { ritual: Ritual }) {
   const { deleteRitual, editRitual } = useRituals();
   const [isRitualMenuOpen, setIsRitualMenuOpen] = useState(false);
   const [isRitualDeleting, setIsRitualDeleting] = useState(false); // showing JSX deleting state
-  const [isCursorInThisElement, setIsCursorInThisElement] = useState(false); //for closing menu
+  const [isDescriptionFull, setIsDescriptionFull] = useState(false); //for showing full description
+  const [shouldOpenMenu, setShouldOpenMenu] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const closeMenuRef = useRef<HTMLDivElement>(null);
   const {
     register,
     handleSubmit,
@@ -32,11 +34,11 @@ export default function RitualsListItem({ ritual }: { ritual: Ritual }) {
 
   function onSubmit(data: FieldValues) {
     const editedRitual: Ritual = {
-      id: ritual.id, //not changing id
+      id: ritual.id, // not changing id
       title: data.title,
       description: data.description,
       importance: data.importance,
-      timeStamp: ritual.timeStamp //not changing timeStamp
+      timeStamp: ritual.timeStamp // not changing timeStamp
     };
     editRitual(editedRitual);
     reset();
@@ -48,18 +50,40 @@ export default function RitualsListItem({ ritual }: { ritual: Ritual }) {
     setIsModalOpen(false);
   }
 
-  // --automatically closing menu 2s after mouseLeave
+  // --opening menu and also dealing with full description if needed----------------
   useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      if (isRitualMenuOpen && !isCursorInThisElement) {
+    if (!isDescriptionFull && shouldOpenMenu) {
+      setIsRitualMenuOpen(true);
+      setShouldOpenMenu(false); // Reset for next time
+    }
+  }, [isDescriptionFull, shouldOpenMenu]);
+
+  function onMenuOpen() {
+    setIsDescriptionFull(false);
+    setShouldOpenMenu(true);
+  }
+
+  // --closing menu on outside click------------------------------------------------
+  useEffect(() => {
+    const checkIfClickedOutside = (e: MouseEvent) => {
+      // If the menu is open and the clicked target is not within the menu, close it
+      if (
+        isRitualMenuOpen &&
+        e.target &&
+        !closeMenuRef.current?.contains(e.target as Node)
+      ) {
         setIsRitualMenuOpen(false);
       }
-    }, 2000);
+    };
+
+    // Set up the listener for mousedown
+    document.addEventListener("mousedown", checkIfClickedOutside);
 
     return () => {
-      clearTimeout(timeoutId);
+      // Clean up the listener on component unmount
+      document.removeEventListener("mousedown", checkIfClickedOutside);
     };
-  }, [isRitualMenuOpen, isCursorInThisElement]);
+  }, [isRitualMenuOpen]);
 
   // --JSX--deleting-state---------------------------------------------------------
   if (isRitualDeleting) {
@@ -95,10 +119,8 @@ export default function RitualsListItem({ ritual }: { ritual: Ritual }) {
     return (
       <>
         <li
-          onMouseEnter={() => setIsCursorInThisElement(true)} // for closing menu
-          onMouseLeave={() => setIsCursorInThisElement(false)} // for closing menu
           className={cc(
-            "grid grid-cols-10 gap-2 mx-2 bg-slate-200 rounded-md hover:bg-slate-100 transition-all",
+            "grid grid-cols-10 gap-2 mx-2 bg-slate-200 rounded-md hover:bg-slate-100 transition-all max-w-3xl",
             isRitualMenuOpen
               ? "border-2 border-orange-400"
               : "border-transparent border-2"
@@ -112,15 +134,17 @@ export default function RitualsListItem({ ritual }: { ritual: Ritual }) {
           <div
             className={`col-span-2 sm:col-span-6 md:col-span-7 flex justify-end items-center sm:justify-between gap-3 `}
           >
-            <div
-              className="hidden sm:block overflow-hidden px-1"
-              title={ritual.description}
+            <button
+              onClick={() =>
+                !isRitualMenuOpen && setIsDescriptionFull(!isDescriptionFull)
+              }
+              className={cc(
+                "hidden sm:block overflow-hidden px-1 text-ellipsis",
+                !isDescriptionFull && "truncate"
+              )}
             >
-              {/* truncate description, it should never render in more then 2 lines*/}
-              {ritual.description.length > 21
-                ? `${ritual.description.slice(0, isRitualMenuOpen ? 35 : 70)}...`
-                : ritual.description}
-            </div>
+              {ritual.description}
+            </button>
             {!isRitualMenuOpen ? (
               //----- menu close -------------------------------------------------------
               <div className="flex items-center gap-1">
@@ -136,7 +160,7 @@ export default function RitualsListItem({ ritual }: { ritual: Ritual }) {
                   )}
                 />
                 <button
-                  onClick={() => setIsRitualMenuOpen(true)}
+                  onClick={onMenuOpen}
                   className="hover:scale-125 transition-transform"
                 >
                   <EllipsisVertical
@@ -147,7 +171,10 @@ export default function RitualsListItem({ ritual }: { ritual: Ritual }) {
               </div>
             ) : (
               //------ menu open ----------------------------------------------------------
-              <div className="flex gap-3 z-10 bg-slate-300 rounded-md p-1 ps-3 me-1 border-2 border-orange-400">
+              <div
+                className="flex gap-3 z-10 bg-slate-300 rounded-md p-1 ps-3 me-1 border-2 border-orange-400"
+                ref={closeMenuRef}
+              >
                 <button
                   onClick={() => {
                     setIsRitualMenuOpen(false);
@@ -213,7 +240,7 @@ export default function RitualsListItem({ ritual }: { ritual: Ritual }) {
                 {...register("title")}
                 id="title"
                 defaultValue={ritual.title}
-                className="border-1 border-solid border-none focus:border-yellow-700 px-2 py-1 rounded-md"
+                className="border-2 border-solid border-transparent outline-none focus:border-orange-400 px-2 py-1 rounded-md"
               />
               {errors.title && errors.title && (
                 <p className="text-red-500">{errors.title.message}</p>
@@ -227,7 +254,7 @@ export default function RitualsListItem({ ritual }: { ritual: Ritual }) {
                 {...register("description")}
                 id="description"
                 defaultValue={ritual.description}
-                className="border-1 border-solid border-none focus:border-yellow-700 px-2 py-1 rounded-md"
+                className="border-2 border-solid border-transparent outline-none focus:border-orange-400 px-2 py-1 rounded-md"
               />
               {errors.description && (
                 <p className="text-red-500">{errors.description.message}</p>

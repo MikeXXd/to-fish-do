@@ -60,7 +60,7 @@ export function Rituals() {
               {...register("title")}
               id="title"
               autoFocus
-              className="border-1 border-solid border-none focus:border-yellow-700 px-2 py-1 rounded-md"
+              className="border-2 border-solid border-transparent outline-none focus:border-orange-400 px-2 py-1 rounded-md"
             />
             {errors.title && errors.title && (
               <p className="text-red-500">{errors.title.message}</p>
@@ -73,7 +73,7 @@ export function Rituals() {
               type="text"
               {...register("description")}
               id="description"
-              className="border-1 border-solid border-none focus:border-yellow-700 px-2 py-1 rounded-md"
+              className="border-2 border-solid border-transparent outline-none focus:border-orange-400 px-2 py-1 rounded-md"
             />
             {errors.description && (
               <p className="text-red-500">{errors.description.message}</p>
