@@ -1,7 +1,8 @@
 import { FishSymbol, Menu, X } from "lucide-react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { cc } from "../util/cc";
+import { useActionOnOutsideClick } from "../hooks/useActionOnOutsideClick";
 
 const LINKS = [
   { name: "Tasks", path: "/" },
@@ -12,6 +13,8 @@ const LINKS = [
 
 function NavBar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+  useActionOnOutsideClick(isMenuOpen, menuRef, () => setIsMenuOpen(false));
 
   return (
     <div className="sticky top-0 z-10 flex border-gray-500 bg-gray-500 text-slate-200">
@@ -31,7 +34,7 @@ function NavBar() {
         </div>
 
         {/*Menu Hamburg*/}
-        <div className="sm:hidden relative ">
+        <div className="sm:hidden relative " ref={menuRef}>
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             className="hover:text-white text-gray-200"
