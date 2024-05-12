@@ -1,19 +1,20 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
+  BarChart4,
   EllipsisVertical,
   FishSymbol,
   Pencil,
-  Trash2,
-  BarChart4,
-  ShieldX
+  ShieldX,
+  Trash2
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { Ritual } from "../contexts/Ritual";
-import useRituals from "../hooks/useRituals";
+import { FieldValues, useForm } from "react-hook-form";
 import { cc } from "../../../util/cc";
 import Modal from "../../Modal";
-import { FieldValues, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { IMPORTANCE, RitualFormData, ritualSchema } from "../constants";
+import { Ritual } from "../contexts/Ritual";
+import useRituals from "../hooks/useRituals";
+import { useActionOnOutsideClick } from "../../../hooks/useActionOnOutsideClick";
 
 const ICON_SIZE = 27;
 
@@ -25,6 +26,9 @@ export default function RitualsListItem({ ritual }: { ritual: Ritual }) {
   const [shouldOpenMenu, setShouldOpenMenu] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const closeMenuRef = useRef<HTMLDivElement>(null);
+  useActionOnOutsideClick(isRitualMenuOpen, closeMenuRef, () =>
+    setIsRitualMenuOpen(false)
+  );
   const {
     register,
     handleSubmit,
@@ -64,26 +68,27 @@ export default function RitualsListItem({ ritual }: { ritual: Ritual }) {
   }
 
   // --closing menu on outside click------------------------------------------------
-  useEffect(() => {
-    const checkIfClickedOutside = (e: MouseEvent) => {
-      // If the menu is open and the clicked target is not within the menu, close it
-      if (
-        isRitualMenuOpen &&
-        e.target &&
-        !closeMenuRef.current?.contains(e.target as Node)
-      ) {
-        setIsRitualMenuOpen(false);
-      }
-    };
+  //   useEffect(() => {
 
-    // Set up the listener for mousedown
-    document.addEventListener("mousedown", checkIfClickedOutside);
+  //     const checkIfClickedOutside = (e: MouseEvent) => {
+  //       // If the menu is open and the clicked target is not within the menu, close it
+  //       if (
+  //         isRitualMenuOpen &&
+  //         e.target &&
+  //         !closeMenuRef.current?.contains(e.target as Node)
+  //       ) {
+  //         setIsRitualMenuOpen(false);
+  //       }
+  //     };
 
-    return () => {
-      // Clean up the listener on component unmount
-      document.removeEventListener("mousedown", checkIfClickedOutside);
-    };
-  }, [isRitualMenuOpen]);
+  //     // Set up the listener for mousedown
+  //     document.addEventListener("mousedown", checkIfClickedOutside);
+
+  //     return () => {
+  //       // Clean up the listener on component unmount
+  //       document.removeEventListener("mousedown", checkIfClickedOutside);
+  //     };
+  //   }, [isRitualMenuOpen]);
 
   // --JSX--deleting-state---------------------------------------------------------
   if (isRitualDeleting) {
@@ -310,3 +315,30 @@ export default function RitualsListItem({ ritual }: { ritual: Ritual }) {
       </>
     );
 }
+
+// --supporting functions-----------------------------------------------------------
+
+// export function actOnOutsideClick(
+//   ref: React.RefObject<HTMLElement>,
+//   condition: boolean,
+//   action: (value: React.SetStateAction<boolean>) => void
+// ) {
+//   const checkIfClickedOutside = (e: MouseEvent) => {
+//     // If the menu is open and the clicked target is not within the menu, close it
+//     if (
+//       condition &&
+//       e.target &&
+//       !(ref.current as HTMLElement)?.contains(e.target as Node)
+//     ) {
+//       action;
+//     }
+//   };
+
+//   // Set up the listener for mousedown
+//   document.addEventListener("mousedown", checkIfClickedOutside);
+
+//   return () => {
+//     // Clean up the listener on component unmount
+//     document.removeEventListener("mousedown", checkIfClickedOutside);
+//   };
+// }
