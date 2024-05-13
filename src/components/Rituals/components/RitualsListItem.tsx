@@ -9,12 +9,18 @@ import {
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { FieldValues, useForm } from "react-hook-form";
+import { useActionOnOutsideClick } from "../../../hooks/useActionOnOutsideClick";
 import { cc } from "../../../util/cc";
 import Modal from "../../Modal";
-import { IMPORTANCE, RitualFormData, ritualSchema } from "../constants";
+import {
+  RITUAL_IMPORTANCE,
+  RITUAL_REMINDER,
+  RitualFormData,
+  ritualSchema
+} from "../constants";
 import { Ritual } from "../contexts/Ritual";
 import useRituals from "../hooks/useRituals";
-import { useActionOnOutsideClick } from "../../../hooks/useActionOnOutsideClick";
+import ModalFooter from "../../ModalFooter";
 
 const ICON_SIZE = 27;
 
@@ -42,6 +48,8 @@ export default function RitualsListItem({ ritual }: { ritual: Ritual }) {
       title: data.title,
       description: data.description,
       importance: data.importance,
+      reminder: data.reminder,
+      frequency: data.frequency,
       timeStamp: ritual.timeStamp // not changing timeStamp
     };
     editRitual(editedRitual);
@@ -66,29 +74,6 @@ export default function RitualsListItem({ ritual }: { ritual: Ritual }) {
     setIsDescriptionFull(false);
     setShouldOpenMenu(true);
   }
-
-  // --closing menu on outside click------------------------------------------------
-  //   useEffect(() => {
-
-  //     const checkIfClickedOutside = (e: MouseEvent) => {
-  //       // If the menu is open and the clicked target is not within the menu, close it
-  //       if (
-  //         isRitualMenuOpen &&
-  //         e.target &&
-  //         !closeMenuRef.current?.contains(e.target as Node)
-  //       ) {
-  //         setIsRitualMenuOpen(false);
-  //       }
-  //     };
-
-  //     // Set up the listener for mousedown
-  //     document.addEventListener("mousedown", checkIfClickedOutside);
-
-  //     return () => {
-  //       // Clean up the listener on component unmount
-  //       document.removeEventListener("mousedown", checkIfClickedOutside);
-  //     };
-  //   }, [isRitualMenuOpen]);
 
   // --JSX--deleting-state---------------------------------------------------------
   if (isRitualDeleting) {
@@ -125,16 +110,26 @@ export default function RitualsListItem({ ritual }: { ritual: Ritual }) {
       <>
         <li
           className={cc(
-            "grid grid-cols-10 gap-2 mx-2 bg-slate-200 rounded-md hover:bg-slate-100 transition-all max-w-3xl",
+            "relative grid grid-cols-10 gap-2 mx-2 bg-slate-200 rounded-md hover:bg-slate-100 transition-all max-w-3xl",
             isRitualMenuOpen
               ? "border-2 border-orange-400"
               : "border-transparent border-2"
           )}
         >
+          <span className="absolute -top-2 -start-2 bg-red-300 rounded-md p-1 text-xs font-semibold">
+            100%
+            <span className="sr-only">unread messages</span>
+          </span>
           {/* --left-side---title-------------------------------- */}
-          <div className=" p-2 col-span-8 sm:col-span-4 md:col-span-3 mx-auto font-semibold text-2xl sm:text-lg">
+          <button
+            className=" p-2 col-span-8 sm:col-span-4 md:col-span-3 mx-auto font-semibold text-2xl sm:text-lg"
+            type="button"
+            onClick={() =>
+              !isRitualMenuOpen && setIsDescriptionFull(!isDescriptionFull)
+            }
+          >
             {ritual.title}
-          </div>{" "}
+          </button>{" "}
           {/* ----right-side---description and icons------------------------------ */}
           <div
             className={`col-span-2 sm:col-span-6 md:col-span-7 flex justify-end items-center sm:justify-between gap-3 `}
@@ -143,6 +138,7 @@ export default function RitualsListItem({ ritual }: { ritual: Ritual }) {
               onClick={() =>
                 !isRitualMenuOpen && setIsDescriptionFull(!isDescriptionFull)
               }
+              type="button"
               className={cc(
                 "hidden sm:block overflow-hidden px-1 text-ellipsis",
                 !isDescriptionFull && "truncate"
@@ -175,7 +171,7 @@ export default function RitualsListItem({ ritual }: { ritual: Ritual }) {
                 </button>
               </div>
             ) : (
-              //------ menu open ----------------------------------------------------------
+              //------ menu open --------------------------------------------
               <div
                 className="flex gap-3 z-10 bg-slate-300 rounded-md p-1 ps-3 me-1 border-2 border-orange-400"
                 ref={closeMenuRef}
@@ -238,6 +234,7 @@ export default function RitualsListItem({ ritual }: { ritual: Ritual }) {
             onSubmit={handleSubmit(onSubmit)}
             className="flex flex-col gap-3"
           >
+            {/* --Title------------------------------------------ */}
             <div className="flex flex-col">
               <label htmlFor="title">Ritual Title</label>
               <input
@@ -252,6 +249,7 @@ export default function RitualsListItem({ ritual }: { ritual: Ritual }) {
               )}
             </div>
 
+            {/* --Description------------------------------------------ */}
             <div className="flex flex-col">
               <label htmlFor="description">Description</label>
               <input
@@ -273,18 +271,18 @@ export default function RitualsListItem({ ritual }: { ritual: Ritual }) {
                 id="importance"
                 className="flex justify-between w-full grid-cols-4 gap-2 rounded-md bg-white p-2"
               >
-                {IMPORTANCE.map((value, index) => (
+                {RITUAL_IMPORTANCE.map((value, index) => (
                   <div>
                     <input
                       {...register("importance")}
                       type="radio"
-                      id={index.toString()}
+                      id={`importance-${index}`}
                       value={value}
                       className="peer hidden"
                       defaultChecked={ritual.importance === value}
                     />
                     <label
-                      htmlFor={index.toString()}
+                      htmlFor={`importance-${index}`}
                       className="block cursor-pointer select-none rounded-md p-2 text-center peer-checked:bg-blue-500 peer-checked:font-bold peer-checked:text-white"
                     >
                       {value}
@@ -293,52 +291,58 @@ export default function RitualsListItem({ ritual }: { ritual: Ritual }) {
                 ))}
               </div>
             </div>
-
-            {/*footer*/}
-            <div className="flex items-center justify-end mt-6">
-              <button
-                className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                type="button"
-                onClick={onModalClose}
+            {/* --Reminder------------------------------------------ */}
+            <div className="flex flex-col">
+              <label htmlFor="reminder">Reminder</label>
+              <div
+                id="reminder"
+                className="flex justify-between w-full grid-cols-4 gap-2 rounded-md bg-white p-2"
               >
-                Close
-              </button>
-              <button
-                className="bg-green-600 text-white hover:bg-green-500  hover:text-black font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                type="submit"
-              >
-                Save Changes
-              </button>
+                {RITUAL_REMINDER.map((value, index) => (
+                  <div>
+                    <input
+                      {...register("reminder")}
+                      type="radio"
+                      id={`reminder-${index}`}
+                      value={value}
+                      className="peer hidden"
+                      defaultChecked={ritual.reminder === value}
+                    />
+                    <label
+                      htmlFor={`reminder-${index}`}
+                      className="block cursor-pointer select-none rounded-md p-2 text-center peer-checked:bg-blue-500 peer-checked:font-bold peer-checked:text-white"
+                    >
+                      {value}
+                    </label>
+                  </div>
+                ))}
+              </div>
+              {/* -- frequency------------------------------------------  */}
+              <div className="flex flex-col ">
+                <div className="flex justify-start items-center">
+                  <input
+                    type="number"
+                    {...register("frequency")}
+                    id="frequency"
+                    defaultValue={ritual.frequency}
+                    className="border-2 border-solid border-transparent outline-none focus:border-orange-400 px-2 m-2 py-1 rounded-md w-16"
+                  />
+                  <label htmlFor="frequency"> times</label>
+                </div>
+                {errors.frequency && (
+                  <p className="text-red-500">{errors.frequency.message}</p>
+                )}
+              </div>
             </div>
+
+            {/*--footer--buttons------------------------------------------*/}
+            <ModalFooter
+              closeBtnName="Close"
+              onCancel={onModalClose}
+              submitBtnName="Save Changes"
+            />
           </form>
         </Modal>
       </>
     );
 }
-
-// --supporting functions-----------------------------------------------------------
-
-// export function actOnOutsideClick(
-//   ref: React.RefObject<HTMLElement>,
-//   condition: boolean,
-//   action: (value: React.SetStateAction<boolean>) => void
-// ) {
-//   const checkIfClickedOutside = (e: MouseEvent) => {
-//     // If the menu is open and the clicked target is not within the menu, close it
-//     if (
-//       condition &&
-//       e.target &&
-//       !(ref.current as HTMLElement)?.contains(e.target as Node)
-//     ) {
-//       action;
-//     }
-//   };
-
-//   // Set up the listener for mousedown
-//   document.addEventListener("mousedown", checkIfClickedOutside);
-
-//   return () => {
-//     // Clean up the listener on component unmount
-//     document.removeEventListener("mousedown", checkIfClickedOutside);
-//   };
-// }

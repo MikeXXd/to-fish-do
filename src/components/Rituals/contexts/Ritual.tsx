@@ -1,17 +1,22 @@
 import { ReactNode, createContext } from "react";
 import { useLocalStorage } from "../../../hooks/useLocalStorage";
+import { RITUAL_IMPORTANCE, RITUAL_REMINDER } from "../constants";
 
 const LOCAL_STORAGE_RITUALS = {
   KEY: "rituales",
   DEFAULT: []
 };
 
+type RitualImportance = (typeof RITUAL_IMPORTANCE)[number];
+type RitualReminder = (typeof RITUAL_REMINDER)[number];
+
 export interface Ritual {
   id: string;
   title: string;
   description: string;
-  importance: "low" | "medium" | "high";
-  // reminder: "hourly" | "daily" | "weekly" | "monthly";
+  importance: RitualImportance;
+  reminder: RitualReminder;
+  frequency: number;
   timeStamp: Date;
   // achievements: {
   //   completed: number;
