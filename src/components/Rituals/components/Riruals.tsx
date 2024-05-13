@@ -19,6 +19,7 @@ export function Rituals() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const {
     register,
+    watch,
     handleSubmit,
     formState: { errors },
     reset
@@ -144,23 +145,29 @@ export function Rituals() {
                 </div>
               ))}
             </div>
-            {/*--frequency------------------------------------------*/}
+            {/* /*--frequency------------------------------------------ */}
             <div className="flex flex-col ">
               <div className="flex justify-start items-center">
                 <input
                   type="number"
+                  min={1}
                   {...register("frequency")}
                   id="frequency"
-                  className="border-2 border-solid border-transparent outline-none focus:border-orange-400 px-2 m-2 py-1 rounded-md w-16"
+                  defaultValue={1}
+                  className="border-2 border-solid border-transparent outline-none focus:border-orange-400 px-2 m-2 py-1 rounded-md w-16 text-xl font-bold text-blue-500 focus:scale-150"
                 />
-                <label htmlFor="frequency"> times</label>
+                <label
+                  htmlFor="frequency"
+                  className="text-xl font-bold text-blue-500"
+                >
+                  {`${watch("frequency") == 1 ? " time" : " times"} ${watch("reminder")}`}
+                </label>
               </div>
               {errors.frequency && (
                 <p className="text-red-500">{errors.frequency.message}</p>
               )}
             </div>
           </div>
-          {/*--footer--buttons--------------------------------------------*/}
           <ModalFooter
             closeBtnName="Close"
             onCancel={onClose}

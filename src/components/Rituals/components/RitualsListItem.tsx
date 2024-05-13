@@ -39,7 +39,8 @@ export default function RitualsListItem({ ritual }: { ritual: Ritual }) {
     register,
     handleSubmit,
     formState: { errors },
-    reset
+    reset,
+    watch
   } = useForm<RitualFormData>({ resolver: zodResolver(ritualSchema) });
 
   function onSubmit(data: FieldValues) {
@@ -322,12 +323,18 @@ export default function RitualsListItem({ ritual }: { ritual: Ritual }) {
                 <div className="flex justify-start items-center">
                   <input
                     type="number"
+                    min={1}
                     {...register("frequency")}
                     id="frequency"
                     defaultValue={ritual.frequency}
-                    className="border-2 border-solid border-transparent outline-none focus:border-orange-400 px-2 m-2 py-1 rounded-md w-16"
+                    className="border-2 border-solid border-transparent outline-none focus:border-orange-400 px-2 m-2 py-1 rounded-md w-16 text-xl font-bold text-blue-500 focus:scale-150"
                   />
-                  <label htmlFor="frequency"> times</label>
+                  <label
+                    htmlFor="frequency"
+                    className="text-xl font-bold text-blue-500"
+                  >
+                    {`${watch("frequency") == 1 ? " time" : " times"} ${watch("reminder") == undefined ? "" : watch("reminder")}`}
+                  </label>
                 </div>
                 {errors.frequency && (
                   <p className="text-red-500">{errors.frequency.message}</p>
