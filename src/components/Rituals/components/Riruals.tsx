@@ -33,10 +33,10 @@ export function Rituals() {
       importance: data.importance,
       reminder: data.reminder,
       frequency: data.frequency,
-      timeStamp: new Date()
+      timeStamp: new Date(),
+      performed: []
     };
     addRitual(newRitual);
-    console.log("newRitual: ", newRitual);
     reset();
     setIsModalOpen(false);
   }

@@ -18,46 +18,19 @@ export interface Ritual {
   reminder: RitualReminder;
   frequency: number;
   timeStamp: Date;
-  // achievements: {
-  //   completed: number;
-  // };
-  // requiredFrequency: {
-  //   daily:
-  //     | {
-  //         quantity: number;
-  //       }
-  //     | {
-  //         weekly: {
-  //           quantity: number;
-  //           days: {
-  //             monday: boolean;
-  //             tuesday: boolean;
-  //             wednesday: boolean;
-  //             thursday: boolean;
-  //             friday: boolean;
-  //             saturday: boolean;
-  //             sunday: boolean;
-  //           };
-  //         };
-  //       }
-  //     | {
-  //         monthly: {
-  //           quantity: number;
-  //           days: number[];
-  //         };
-  //       }
-  //     | {
-  //         yearly: {
-  //           quantity: number;
-  //         };
-  //       };
-  // };
+  performed: Date[];
+  completed?: {
+    date: Date;
+    set: number;
+    done: number
+  }[]
 }
 
 interface RitualContext {
   rituals: Ritual[];
   addRitual: (ritual: Ritual) => void;
   deleteRitual: (ritual: Ritual) => void;
+  addPermormance: (ritual: Ritual) => void;
   // taskDone: (ritual: Ritual) => void;
   editRitual: (ritual: Ritual) => void;
   // setTaskImportance: (id: string, importance: number) => void;
@@ -84,6 +57,13 @@ export function RitualsProvider({ children }: { children: ReactNode }) {
 
   function addRitual(ritual: Ritual) {
     setRituals([ritual, ...rituals]);
+  }
+
+  function addPermormance(performedRitual: Ritual) {
+    const updatedTasks = rituals.map((ritual) =>
+      ritual.id === performedRitual.id ? {...ritual, performed: [...ritual.performed, new Date()] } : ritual
+    );
+    setRituals(updatedTasks);
   }
 
   // function taskDone(taskDone: Ritual) {
@@ -139,7 +119,8 @@ export function RitualsProvider({ children }: { children: ReactNode }) {
         rituals,
         addRitual,
         deleteRitual,
-        editRitual
+        editRitual,
+        addPermormance
         // setTaskImportance,
         // filterFinishedTasks,
         // areFinishedTasksHidden,

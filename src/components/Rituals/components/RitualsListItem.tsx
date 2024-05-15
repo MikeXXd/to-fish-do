@@ -5,6 +5,7 @@ import {
   FishSymbol,
   Pencil,
   ShieldX,
+  Sparkle,
   Trash2
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -12,6 +13,7 @@ import { FieldValues, useForm } from "react-hook-form";
 import { useActionOnOutsideClick } from "../../../hooks/useActionOnOutsideClick";
 import { cc } from "../../../util/cc";
 import Modal from "../../Modal";
+import ModalFooter from "../../ModalFooter";
 import {
   RITUAL_IMPORTANCE,
   RITUAL_REMINDER,
@@ -20,12 +22,12 @@ import {
 } from "../constants";
 import { Ritual } from "../contexts/Ritual";
 import useRituals from "../hooks/useRituals";
-import ModalFooter from "../../ModalFooter";
 
 const ICON_SIZE = 27;
 
 export default function RitualsListItem({ ritual }: { ritual: Ritual }) {
-  const { deleteRitual, editRitual } = useRituals();
+  const { deleteRitual, editRitual, addPermormance } = useRituals();
+  const [achievementProgress, setAchievementProgress] = useState<number>(0);
   const [isRitualMenuOpen, setIsRitualMenuOpen] = useState(false);
   const [isRitualDeleting, setIsRitualDeleting] = useState(false); // showing JSX deleting state
   const [isDescriptionFull, setIsDescriptionFull] = useState(false); //for showing full description
@@ -45,13 +47,14 @@ export default function RitualsListItem({ ritual }: { ritual: Ritual }) {
 
   function onSubmit(data: FieldValues) {
     const editedRitual: Ritual = {
-      id: ritual.id, // not changing id
+      id: ritual.id, // not changing
       title: data.title,
       description: data.description,
       importance: data.importance,
       reminder: data.reminder,
       frequency: data.frequency,
-      timeStamp: ritual.timeStamp // not changing timeStamp
+      timeStamp: ritual.timeStamp, // not changing
+      performed: ritual.performed // not changing
     };
     editRitual(editedRitual);
     reset();
@@ -75,6 +78,12 @@ export default function RitualsListItem({ ritual }: { ritual: Ritual }) {
     setIsDescriptionFull(false);
     setShouldOpenMenu(true);
   }
+
+  useEffect(() => {
+    setAchievementProgress(
+      Math.round((ritual.performed.length / ritual.frequency) * 100)
+    );
+  }, [ritual.performed.length, ritual.frequency]);
 
   // --JSX--deleting-state---------------------------------------------------------
   if (isRitualDeleting) {
@@ -118,20 +127,46 @@ export default function RitualsListItem({ ritual }: { ritual: Ritual }) {
           )}
         >
           {/* --badges---------------------------------------------- */}
-          <span className="absolute -top-2 -start-2 bg-red-300 rounded-md p-1 text-xs font-semibold">
-            100%
+          <span
+            className={cc(
+              "absolute -top-2 -start-2 rounded-lg p-1 text-xs font-semibold",
+              achievementProgress < 30 && "bg-red-200",
+              achievementProgress >= 30 &&
+                achievementProgress < 100 &&
+                "bg-yellow-200",
+              achievementProgress >= 100 && "bg-green-200"
+            )}
+          >
+            {`${achievementProgress} %`}
             <span className="sr-only">unread messages</span>
           </span>
           {/* --left-side---title-------------------------------- */}
-          <button
-            className=" p-2 col-span-8 sm:col-span-4 md:col-span-3 mx-auto font-semibold text-2xl sm:text-lg"
-            type="button"
-            onClick={() =>
-              !isRitualMenuOpen && setIsDescriptionFull(!isDescriptionFull)
-            }
-          >
-            {ritual.title}
-          </button>{" "}
+          <div className="flex flex-col p-2 col-span-8 sm:col-span-4 md:col-span-3  font-semibold text-2xl sm:text-lg transition-all">
+            <button
+              // className=" p-2 col-span-8 sm:col-span-4 md:col-span-3 mx-auto font-semibold text-2xl sm:text-lg"
+              type="button"
+              onClick={() =>
+                !isRitualMenuOpen && setIsDescriptionFull(!isDescriptionFull)
+              }
+            >
+              {ritual.title}
+            </button>{" "}
+            {isDescriptionFull && (
+              <div className="flex justify-start items-center gap-1 min-w-full">
+                <button
+                  onClick={() => addPermormance(ritual)}
+                  className="hover:scale-125 transition-transform"
+                >
+                  <Sparkle
+                    size={ICON_SIZE}
+                    className="text-gray-500 hover:text-green-600 "
+                  />
+                </button>
+                <span>{`${ritual.performed.length}/${ritual.frequency} `}</span>
+                <span className="text-sm">{ritual.reminder}</span>
+              </div>
+            )}
+          </div>
           {/* ----right-side---description and icons------------------------------ */}
           <div
             className={`col-span-2 sm:col-span-6 md:col-span-7 flex justify-end items-center sm:justify-between gap-3 `}
@@ -276,7 +311,6 @@ export default function RitualsListItem({ ritual }: { ritual: Ritual }) {
                 {RITUAL_IMPORTANCE.map((value, index) => (
                   <div key={index}>
                     <input
-                    
                       {...register("importance")}
                       type="radio"
                       id={`importance-${index}`}
@@ -304,7 +338,6 @@ export default function RitualsListItem({ ritual }: { ritual: Ritual }) {
                 {RITUAL_REMINDER.map((value, index) => (
                   <div key={index}>
                     <input
-                    
                       {...register("reminder")}
                       type="radio"
                       id={`reminder-${index}`}
