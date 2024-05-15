@@ -27,7 +27,7 @@ function NavBar() {
         {/* ----navigation--------------------------- */}
         <div className="hidden sm:flex space-x-4 text-xl">
           {LINKS.map((link) => (
-            <Link to={link.path} className=" text-gray-200 hover:text-white">
+            <Link key={link.name} to={link.path} className=" text-gray-200 hover:text-white">
               {link.name}
             </Link>
           ))}
@@ -52,6 +52,7 @@ function NavBar() {
           >
             {LINKS.map((link) => (
               <Link
+                key={link.name}
                 to={link.path}
                 className=" hover:text-white hover:bg-slate-600   focus:bg-slate-700 py-1 px-2"
                 onClick={() => setIsMenuOpen(false)}

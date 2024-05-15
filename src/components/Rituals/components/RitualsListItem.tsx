@@ -117,6 +117,7 @@ export default function RitualsListItem({ ritual }: { ritual: Ritual }) {
               : "border-transparent border-2"
           )}
         >
+          {/* --badges---------------------------------------------- */}
           <span className="absolute -top-2 -start-2 bg-red-300 rounded-md p-1 text-xs font-semibold">
             100%
             <span className="sr-only">unread messages</span>
@@ -273,8 +274,9 @@ export default function RitualsListItem({ ritual }: { ritual: Ritual }) {
                 className="flex justify-between w-full grid-cols-4 gap-2 rounded-md bg-white p-2"
               >
                 {RITUAL_IMPORTANCE.map((value, index) => (
-                  <div>
+                  <div key={index}>
                     <input
+                    
                       {...register("importance")}
                       type="radio"
                       id={`importance-${index}`}
@@ -300,8 +302,9 @@ export default function RitualsListItem({ ritual }: { ritual: Ritual }) {
                 className="flex justify-between w-full grid-cols-4 gap-2 rounded-md bg-white p-2"
               >
                 {RITUAL_REMINDER.map((value, index) => (
-                  <div>
+                  <div key={index}>
                     <input
+                    
                       {...register("reminder")}
                       type="radio"
                       id={`reminder-${index}`}
