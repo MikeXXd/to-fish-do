@@ -1,5 +1,6 @@
 import { ReactNode, createContext, useState } from "react";
 import { useLocalStorage } from "../../../hooks/useLocalStorage";
+import { Importance } from "../../../constants";
 
 const LOCAL_STORAGE_TASKS = {
   KEY: "taskies",
@@ -12,8 +13,8 @@ export type SortingValues = (typeof SORTING_VALUES)[number];
 
 export interface Task {
   id: string;
-  name: string;
-  importance: number;
+  title: string;
+  importance: Importance;
   done: boolean;
   star: boolean;
   timeStamp: Date;
@@ -25,7 +26,7 @@ interface TasksContext {
   addTask: (task: Task) => void;
   taskDone: (task: Task) => void;
   editTitle: (task: Task, newTitle: string) => void;
-  setTaskImportance: (id: string, importance: number) => void;
+  setTaskImportance: (id: string, importance: Importance) => void;
   deleteTask: (task: Task) => void;
   filterFinishedTasks: () => void;
   areFinishedTasksHidden: boolean;
@@ -68,12 +69,12 @@ export function TasksProvider({ children }: { children: ReactNode }) {
 
   function editTitle(updatingTask: Task, newTitle: string) {
     const updatedTasks = tasks.map((task) =>
-      task.id === updatingTask.id ? { ...task, name: newTitle } : task
+      task.id === updatingTask.id ? { ...task, title: newTitle } : task
     );
     setTasks(updatedTasks);
   }
 
-  function setTaskImportance(id: string, importance: number) {
+  function setTaskImportance(id: string, importance: Importance) {
     const updatedTasks = tasks.map((task) =>
       task.id === id ? { ...task, importance: importance } : task
     );

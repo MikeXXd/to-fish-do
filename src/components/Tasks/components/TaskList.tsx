@@ -53,10 +53,20 @@ function sortTasksByImportance({
   tasks,
   value
 }: SortByImportanceProps): Task[] {
+  const importanceMap = {
+    low: 1,
+    medium: 2,
+    high: 3
+  };
+
   if (value === "ascend") {
-    return tasks.sort((a, b) => a.importance - b.importance);
+    return tasks.sort(
+      (a, b) => importanceMap[a.importance] - importanceMap[b.importance]
+    );
   } else if (value === "descend") {
-    return tasks.sort((a, b) => b.importance - a.importance);
+    return tasks.sort(
+      (a, b) => importanceMap[b.importance] - importanceMap[a.importance]
+    );
   } else return tasks;
 }
 
@@ -80,7 +90,7 @@ function sortTasksByTime({ tasks, value }: SortByTimeProps): Task[] {
 }
 
 interface HasName {
-  name: string;
+  title: string;
 }
 
 function filterBySearchedName<T extends HasName>(
@@ -90,6 +100,6 @@ function filterBySearchedName<T extends HasName>(
   if (!searchName) return array;
 
   return array.filter((item) =>
-    item.name.toLowerCase().includes(searchName.toLowerCase())
+    item.title.toLowerCase().includes(searchName.toLowerCase())
   );
 }

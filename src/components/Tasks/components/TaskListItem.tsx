@@ -11,11 +11,13 @@ import {
   Undo2
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { cc } from "../../../util/cc";
+import ImportanceIconFish from "../../ImportanceIconFish";
 import { Task } from "../contexts/Task";
 import useTasks from "../hooks/useTasks";
-import { cc } from "../../../util/cc";
-import { ImportanceSelector } from "../../ImportanceSelector";
 import { StarIcon } from "./StarIcon";
+
+const TASK_ICON_SIZE = 27;
 
 interface Props {
   task: Task;
@@ -97,7 +99,7 @@ export function TaskListItem({ task }: Props) {
 
   function handleEdit() {
     const newTitle = editRef.current?.value;
-    if (newTitle === undefined || newTitle === task.name) {
+    if (newTitle === undefined || newTitle === task.title) {
       setIsEditing(false);
     } else {
       editTitle(task, newTitle);
@@ -116,7 +118,7 @@ export function TaskListItem({ task }: Props) {
     <li
       key={task.id}
       className={cc(
-        " flex justify-between p-2",
+        " flex justify-between items-center gap-4 p-2",
         isTaskDeleting ? "hover:bg-red-300" : "hover:bg-slate-200",
         isTaskDeleting && "bg-red-200 animate-pulse",
         isNewTask && "bg-green-200 animate-pulse",
@@ -128,6 +130,7 @@ export function TaskListItem({ task }: Props) {
       {/* --Normal-mode------------------------------------------------ */}
       {!isEditing && !isTaskDeleting && (
         <>
+          {/*--left-side------------------------------------------------ */}
           <span
             className={cc(
               task.done && "line-through whitespace-break-spaces",
@@ -135,10 +138,9 @@ export function TaskListItem({ task }: Props) {
               "me-5 w-full text-ellipsis overflow-hidden"
             )}
           >
-            {task.name}
-            <div className="flex gap-1 justify-between">
-              <ImportanceSelector task={task} />
-              <div className="flex gap-1">
+            {task.title}
+            <div className="flex">
+              <div className="flex gap-2">
                 <span className="text-gray-500 text-sm" title="Task lasting">
                   {timeLasting}
                 </span>
@@ -146,17 +148,19 @@ export function TaskListItem({ task }: Props) {
               </div>
             </div>
           </span>
-          <div className="hidden sm:flex flex-nowrap">
+          {/*--right-side------------------------------------------------ */}
+          <div className="hidden sm:flex flex-nowrap items-center gap-3">
+            <ImportanceIconFish importance={task.importance} />
             {task.done ? (
               <button
                 onClick={() => {
                   taskDone(task);
                   setIsTaskChanging(true);
                 }}
-                className="text-green-700 me-1 hover:scale-125"
+                className="text-green-700 hover:scale-125"
                 title="Mark as done"
               >
-                <SquareCheckBig size={24} />
+                <SquareCheckBig size={TASK_ICON_SIZE} />
               </button>
             ) : (
               <button
@@ -164,25 +168,25 @@ export function TaskListItem({ task }: Props) {
                   taskDone(task);
                   setIsTaskChanging(true);
                 }}
-                className="text-orange-700 me-1 hover:scale-125"
+                className="text-orange-700 hover:scale-125"
                 title="Mark as done"
               >
-                <Square size={24} />
+                <Square size={TASK_ICON_SIZE} />
               </button>
             )}
             <button
               onClick={() => setIsEditing(true)}
-              className={` me-1 p-2 hover:scale-125`}
+              className={`hover:scale-125`}
               title="Edit task"
             >
-              <Pencil size={24} />
+              <Pencil size={TASK_ICON_SIZE} />
             </button>
             <button
               onClick={handleDeleteTask}
               className={`text-gray-800  hover:scale-125`}
               title="Delete task"
             >
-              <Trash2 size={24} />
+              <Trash2 size={TASK_ICON_SIZE} />
             </button>
           </div>
           {/* ----Menu-spread-icons----------------------------------------- */}
@@ -191,7 +195,9 @@ export function TaskListItem({ task }: Props) {
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="hover:text-white text-gray-200"
             >
-              {!isMenuOpen && <EllipsisVertical size={24} color="black" />}
+              {!isMenuOpen && (
+                <EllipsisVertical size={TASK_ICON_SIZE} color="black" />
+              )}
             </button>
             <div
               className={cc(isMenuOpen ? "flex" : "hidden", "flex-col gap-2")}
@@ -211,7 +217,7 @@ export function TaskListItem({ task }: Props) {
                   className="text-green-700 hover:scale-125"
                   title="Mark as done"
                 >
-                  <SquareCheckBig size={24} />
+                  <SquareCheckBig size={TASK_ICON_SIZE} />
                 </button>
               ) : (
                 <button
@@ -223,7 +229,7 @@ export function TaskListItem({ task }: Props) {
                   className="text-orange-700 hover:scale-125"
                   title="Mark as done"
                 >
-                  <Square size={24} />
+                  <Square size={TASK_ICON_SIZE} />
                 </button>
               )}
               <button
@@ -234,14 +240,14 @@ export function TaskListItem({ task }: Props) {
                 className={` hover:scale-125`}
                 title="Edit task"
               >
-                <Pencil size={24} />
+                <Pencil size={TASK_ICON_SIZE} />
               </button>
               <button
                 onClick={handleDeleteTask}
                 className={`text-gray-800  hover:scale-125`}
                 title="Delete task"
               >
-                <Trash2 size={24} />
+                <Trash2 size={TASK_ICON_SIZE} />
               </button>
             </div>
           </div>
@@ -252,10 +258,10 @@ export function TaskListItem({ task }: Props) {
       {isTaskDeleting && (
         <>
           <button onClick={() => deleteTask(task)} className="hover:scale-125">
-            <Trash2 size={24} />
+            <Trash2 size={TASK_ICON_SIZE} />
           </button>
           <span className="font-bold text-ellipsis overflow-hidden flex align-middle">
-            {task.name}
+            {task.title}
           </span>
           <div className=" flex justify-between">
             <button
@@ -263,7 +269,7 @@ export function TaskListItem({ task }: Props) {
               className="`text-red-700 hover:scale-125"
               title="Cancel deleting"
             >
-              <ShieldX size={24} />{" "}
+              <ShieldX size={TASK_ICON_SIZE} />{" "}
             </button>
           </div>
         </>
@@ -275,7 +281,7 @@ export function TaskListItem({ task }: Props) {
           <input
             ref={editRef}
             type="text"
-            defaultValue={task.name}
+            defaultValue={task.title}
             autoFocus
             className="bg-slate-100 px-2 w-full me-2 rounded-md"
             onBlur={handleOnBlur}
@@ -287,14 +293,14 @@ export function TaskListItem({ task }: Props) {
               className={` me-1 p-2 hover:scale-125`}
               title="Save edited title"
             >
-              <Save size={24} />
+              <Save size={TASK_ICON_SIZE} />
             </button>
             <button
               onClick={() => setIsEditing(false)}
               className="me-1 hover:scale-125"
               title="Cancel editing"
             >
-              <Undo2 size={24} />
+              <Undo2 size={TASK_ICON_SIZE} />
             </button>
           </div>
         </>

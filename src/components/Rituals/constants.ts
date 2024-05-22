@@ -1,6 +1,6 @@
 import { z } from "zod";
+import { IMPORTANCE } from "../../constants";
 
-export const RITUAL_IMPORTANCE = ["low", "medium", "high"] as const;
 export const RITUAL_REMINDER = ["daily", "weekly", "monthly"] as const;
 
 export const ritualSchema = z.object({
@@ -11,7 +11,7 @@ export const ritualSchema = z.object({
   description: z
     .string()
     .min(3, { message: "Description must have at least 3 characters" }),
-  importance: z.union([z.enum(RITUAL_IMPORTANCE), z.null()]).nullable(),
+  importance: z.union([z.enum(IMPORTANCE), z.null()]).nullable(),
   reminder: z.union([z.enum(RITUAL_REMINDER), z.null()]).nullable(),
   frequency: z.coerce
     .number()

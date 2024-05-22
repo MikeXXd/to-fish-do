@@ -1,20 +1,20 @@
 import { ReactNode, createContext } from "react";
 import { useLocalStorage } from "../../../hooks/useLocalStorage";
-import { RITUAL_IMPORTANCE, RITUAL_REMINDER } from "../constants";
+import { RITUAL_REMINDER } from "../constants";
+import { Importance } from "../../../constants";
 
 const LOCAL_STORAGE_RITUALS = {
   KEY: "rituales",
   DEFAULT: []
 };
 
-type RitualImportance = (typeof RITUAL_IMPORTANCE)[number];
 type RitualReminder = (typeof RITUAL_REMINDER)[number];
 
 export interface Ritual {
   id: string;
   title: string;
   description: string;
-  importance: RitualImportance;
+  importance: Importance;
   reminder: RitualReminder;
   frequency: number;
   timeStamp: Date;
@@ -22,8 +22,8 @@ export interface Ritual {
   completed?: {
     date: Date;
     set: number;
-    done: number
-  }[]
+    done: number;
+  }[];
 }
 
 interface RitualContext {
@@ -61,7 +61,9 @@ export function RitualsProvider({ children }: { children: ReactNode }) {
 
   function addPermormance(performedRitual: Ritual) {
     const updatedTasks = rituals.map((ritual) =>
-      ritual.id === performedRitual.id ? {...ritual, performed: [...ritual.performed, new Date()] } : ritual
+      ritual.id === performedRitual.id
+        ? { ...ritual, performed: [...ritual.performed, new Date()] }
+        : ritual
     );
     setRituals(updatedTasks);
   }

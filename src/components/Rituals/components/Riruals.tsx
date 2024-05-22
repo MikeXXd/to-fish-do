@@ -1,10 +1,11 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { FieldValues, useForm } from "react-hook-form";
+import { IMPORTANCE } from "../../../constants";
 import Modal from "../../Modal";
+import ModalFooter from "../../ModalFooter";
 import TitlePlusBtn from "../../TitlePlusBtn";
 import {
-  RITUAL_IMPORTANCE,
   RITUAL_REMINDER,
   RitualFormData,
   ritualSchema
@@ -12,7 +13,6 @@ import {
 import { Ritual } from "../contexts/Ritual";
 import useRituals from "../hooks/useRituals";
 import RitualsList from "./RitualsList";
-import ModalFooter from "../../ModalFooter";
 
 export function Rituals() {
   const { addRitual } = useRituals();
@@ -98,7 +98,7 @@ export function Rituals() {
               id="importance"
               className="flex justify-between w-full grid-cols-4 gap-2 rounded-md bg-white p-2"
             >
-              {RITUAL_IMPORTANCE.map((value, index) => (
+              {IMPORTANCE.map((value, index) => (
                 <div key={index}>
                   <input
                     {...register("importance")}

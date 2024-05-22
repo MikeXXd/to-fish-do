@@ -27,7 +27,11 @@ function NavBar() {
         {/* ----navigation--------------------------- */}
         <div className="hidden sm:flex space-x-4 text-xl">
           {LINKS.map((link) => (
-            <Link key={link.name} to={link.path} className=" text-gray-200 hover:text-white">
+            <Link
+              key={link.name}
+              to={link.path}
+              className=" text-gray-200 hover:text-white"
+            >
               {link.name}
             </Link>
           ))}

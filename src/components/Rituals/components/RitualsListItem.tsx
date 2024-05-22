@@ -2,7 +2,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   BarChart4,
   EllipsisVertical,
-  FishSymbol,
   Pencil,
   ShieldX,
   Sparkle,
@@ -10,12 +9,13 @@ import {
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { FieldValues, useForm } from "react-hook-form";
+import { IMPORTANCE } from "../../../constants";
 import { useActionOnOutsideClick } from "../../../hooks/useActionOnOutsideClick";
 import { cc } from "../../../util/cc";
+import ImportanceIconFish from "../../ImportanceIconFish";
 import Modal from "../../Modal";
 import ModalFooter from "../../ModalFooter";
 import {
-  RITUAL_IMPORTANCE,
   RITUAL_REMINDER,
   RitualFormData,
   ritualSchema
@@ -187,15 +187,9 @@ export default function RitualsListItem({ ritual }: { ritual: Ritual }) {
               //----- menu close -------------------------------------------------------
               <div className="flex items-center gap-1">
                 {" "}
-                <FishSymbol
+                <ImportanceIconFish
+                  importance={ritual.importance}
                   size={ICON_SIZE}
-                  className={cc(
-                    "flex",
-                    ritual.importance === "high" && "-rotate-90 text-red-500",
-                    ritual.importance === "medium" &&
-                      "-rotate-45 text-orange-400",
-                    ritual.importance === "low" && "text-blue-900"
-                  )}
                 />
                 <button
                   onClick={onMenuOpen}
@@ -308,7 +302,7 @@ export default function RitualsListItem({ ritual }: { ritual: Ritual }) {
                 id="importance"
                 className="flex justify-between w-full grid-cols-4 gap-2 rounded-md bg-white p-2"
               >
-                {RITUAL_IMPORTANCE.map((value, index) => (
+                {IMPORTANCE.map((value, index) => (
                   <div key={index}>
                     <input
                       {...register("importance")}
