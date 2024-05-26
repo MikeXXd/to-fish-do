@@ -191,6 +191,7 @@ export function TaskListItem({ task }: Props) {
           </div>
           {/* ----Menu-spread-icons----------------------------------------- */}
           <div className="sm:hidden flex relative">
+            <ImportanceIconFish importance={task.importance} size={TASK_ICON_SIZE}/>
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="hover:text-white text-gray-200"
