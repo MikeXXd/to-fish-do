@@ -82,14 +82,14 @@ export function FilterBar({ searchName, onChange }: FilterBarProps) {
           <div onClick={filterFinishedTasks}>
             {areFinishedTasksHidden ? (
               <div
-                className="text-orange-500 hover:scale-125"
+                className="text-orange-500 hover:scale-125 transition-transform"
                 title="Show finished tasks"
               >
                 <EyeOff size={24} />
               </div>
             ) : (
               <div
-                className="text-green-700 hover:scale-125"
+                className="text-green-700 hover:scale-125 transition-transform"
                 title="Hide finished tasks"
               >
                 <Eye size={24} />

@@ -16,6 +16,7 @@ import ImportanceIconFish from "../../ImportanceIconFish";
 import { Task } from "../contexts/Task";
 import useTasks from "../hooks/useTasks";
 import { StarIcon } from "./StarIcon";
+import { useActionOnOutsideClick } from "../../../hooks/useActionOnOutsideClick";
 
 const TASK_ICON_SIZE = 27;
 
@@ -37,6 +38,8 @@ export function TaskListItem({ task }: Props) {
     return false;
   });
   const editRef = useRef<HTMLInputElement>(null);
+  const closeMenuRef = useRef<HTMLDivElement>(null);
+  useActionOnOutsideClick( isMenuOpen, closeMenuRef, () => setIsMenuOpen(false));
 
   const timeLasting = formatDistance(task.timeStamp, new Date(), {
     addSuffix: true
@@ -157,7 +160,7 @@ export function TaskListItem({ task }: Props) {
                   taskDone(task);
                   setIsTaskChanging(true);
                 }}
-                className="text-green-700 hover:scale-125"
+                className="text-green-700 hover:scale-125 transition-transform"
                 title="Mark as done"
               >
                 <SquareCheckBig size={TASK_ICON_SIZE} />
@@ -168,7 +171,7 @@ export function TaskListItem({ task }: Props) {
                   taskDone(task);
                   setIsTaskChanging(true);
                 }}
-                className="text-orange-700 hover:scale-125"
+                className="text-orange-700 hover:scale-125 transition-transform"
                 title="Mark as done"
               >
                 <Square size={TASK_ICON_SIZE} />
@@ -176,35 +179,39 @@ export function TaskListItem({ task }: Props) {
             )}
             <button
               onClick={() => setIsEditing(true)}
-              className={`hover:scale-125`}
+              className={`hover:scale-125 transition-transform`}
               title="Edit task"
             >
               <Pencil size={TASK_ICON_SIZE} />
             </button>
             <button
               onClick={handleDeleteTask}
-              className={`text-gray-800  hover:scale-125`}
+              className={`text-gray-800  hover:scale-125 transition-transform`}
               title="Delete task"
             >
               <Trash2 size={TASK_ICON_SIZE} />
             </button>
           </div>
-          {/* ----Menu-spread-icons----------------------------------------- */}
-          <div className="sm:hidden flex relative">
-            <ImportanceIconFish importance={task.importance} size={TASK_ICON_SIZE}/>
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="hover:text-white text-gray-200"
-            >
-              {!isMenuOpen && (
-                <EllipsisVertical size={TASK_ICON_SIZE} color="black" />
-              )}
-            </button>
+
+          {/* ----Menu-spread-icons-open---------------------------------------- */}
+          <div className="sm:hidden flex relative transition-transform" ref={closeMenuRef}>
+            {isMenuOpen || (
+              <div className="sm:hidden flex relative">
+                <ImportanceIconFish
+                  importance={task.importance}
+                  size={TASK_ICON_SIZE}
+                />
+                <button
+                  onClick={() => setIsMenuOpen(!isMenuOpen)}
+                  className="text-gray-500 hover:text-black hover:scale-125 transition-transform"
+                >
+                  <EllipsisVertical size={TASK_ICON_SIZE} color="black" />
+                </button>
+              </div>
+            )}
             <div
-              className={cc(isMenuOpen ? "flex" : "hidden", "flex-col gap-2")}
+              className={cc(isMenuOpen ? "flex" : "hidden", "gap-2")}
               role="menu"
-              onFocus={() => console.log("OnFocus")}
-              onBlur={() => console.log("OnBlur")}
               aria-orientation="vertical"
               aria-labelledby="options-menu"
             >
@@ -215,7 +222,7 @@ export function TaskListItem({ task }: Props) {
                     setIsTaskChanging(true);
                     setIsMenuOpen(false);
                   }}
-                  className="text-green-700 hover:scale-125"
+                  className="text-green-700 hover:scale-125 transition-transform"
                   title="Mark as done"
                 >
                   <SquareCheckBig size={TASK_ICON_SIZE} />
@@ -227,7 +234,7 @@ export function TaskListItem({ task }: Props) {
                     setIsTaskChanging(true);
                     setIsMenuOpen(false);
                   }}
-                  className="text-orange-700 hover:scale-125"
+                  className="text-orange-700 hover:scale-125 transition-transform"
                   title="Mark as done"
                 >
                   <Square size={TASK_ICON_SIZE} />
@@ -238,18 +245,24 @@ export function TaskListItem({ task }: Props) {
                   setIsEditing(true);
                   setIsMenuOpen(false);
                 }}
-                className={` hover:scale-125`}
+                className={` hover:scale-125 transition-transform`}
                 title="Edit task"
               >
                 <Pencil size={TASK_ICON_SIZE} />
               </button>
               <button
                 onClick={handleDeleteTask}
-                className={`text-gray-800  hover:scale-125`}
+                className={`text-gray-800  hover:scale-125 transition-transform`}
                 title="Delete task"
               >
                 <Trash2 size={TASK_ICON_SIZE} />
               </button>
+              <button
+                  onClick={() => setIsMenuOpen(!isMenuOpen)}
+                  className="text-gray-500 hover:text-black hover:scale-125 transition-transform"
+                >
+                  <EllipsisVertical size={TASK_ICON_SIZE} color="black" />
+                </button>
             </div>
           </div>
         </>
@@ -258,7 +271,7 @@ export function TaskListItem({ task }: Props) {
       {/* ----Task-Deleting-mode------------------------------------------ */}
       {isTaskDeleting && (
         <>
-          <button onClick={() => deleteTask(task)} className="hover:scale-125">
+          <button onClick={() => deleteTask(task)} className="hover:scale-125 transition-transform">
             <Trash2 size={TASK_ICON_SIZE} />
           </button>
           <span className="font-bold text-ellipsis overflow-hidden flex align-middle">
@@ -267,7 +280,7 @@ export function TaskListItem({ task }: Props) {
           <div className=" flex justify-between">
             <button
               onClick={() => setIsTaskDeleteing(false)}
-              className="`text-red-700 hover:scale-125"
+              className="`text-red-700 hover:scale-125 transition-transform"
               title="Cancel deleting"
             >
               <ShieldX size={TASK_ICON_SIZE} />{" "}
@@ -291,14 +304,14 @@ export function TaskListItem({ task }: Props) {
           <div className="flex flex-nowrap">
             <button
               onClick={handleEdit}
-              className={` me-1 p-2 hover:scale-125`}
+              className={` me-1 p-2 hover:scale-125 transition-transform`}
               title="Save edited title"
             >
               <Save size={TASK_ICON_SIZE} />
             </button>
             <button
               onClick={() => setIsEditing(false)}
-              className="me-1 hover:scale-125"
+              className="me-1 hover:scale-125 transition-transform"
               title="Cancel editing"
             >
               <Undo2 size={TASK_ICON_SIZE} />
