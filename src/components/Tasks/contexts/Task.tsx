@@ -25,7 +25,7 @@ interface TasksContext {
   tasks: Task[];
   addTask: (task: Task) => void;
   taskDone: (task: Task) => void;
-  editTitle: (task: Task, newTitle: string) => void;
+  editTask: (task: Task) => void;
   setTaskImportance: (id: string, importance: Importance) => void;
   deleteTask: (task: Task) => void;
   filterFinishedTasks: () => void;
@@ -67,9 +67,9 @@ export function TasksProvider({ children }: { children: ReactNode }) {
     setTasks(tasks.filter((task) => task.id !== DeleteTask.id));
   }
 
-  function editTitle(updatingTask: Task, newTitle: string) {
+  function editTask(updatingTask: Task) {
     const updatedTasks = tasks.map((task) =>
-      task.id === updatingTask.id ? { ...task, title: newTitle } : task
+      task.id === updatingTask.id ? updatingTask : task
     );
     setTasks(updatedTasks);
   }
@@ -107,7 +107,7 @@ export function TasksProvider({ children }: { children: ReactNode }) {
         addTask,
         taskDone,
         deleteTask,
-        editTitle,
+        editTask,
         setTaskImportance,
         filterFinishedTasks,
         areFinishedTasksHidden,

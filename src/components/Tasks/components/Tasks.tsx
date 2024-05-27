@@ -68,7 +68,7 @@ export default function Tasks() {
               {...register("title")}
               id="title"
               autoFocus
-              className="border-2 border-solid border-transparent outline-none focus:border-orange-400 px-2 py-1 rounded-md"
+              className="border-2 border-solid border-transparent outline-none focus:border-orange-400 px-2 py-1 rounded-md text-blue-500 font-bold"
             />
             {errors.title && errors.title && (
               <p className="text-red-500">{errors.title.message}</p>

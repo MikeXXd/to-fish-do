@@ -273,7 +273,7 @@ export default function RitualsListItem({ ritual }: { ritual: Ritual }) {
                 {...register("title")}
                 id="title"
                 defaultValue={ritual.title}
-                className="border-2 border-solid border-transparent outline-none focus:border-orange-400 px-2 py-1 rounded-md"
+                className="border-2 border-solid border-transparent outline-none focus:border-orange-400 px-2 py-1 rounded-md text-blue-500 font-bold"
               />
               {errors.title && errors.title && (
                 <p className="text-red-500">{errors.title.message}</p>
@@ -288,7 +288,7 @@ export default function RitualsListItem({ ritual }: { ritual: Ritual }) {
                 {...register("description")}
                 id="description"
                 defaultValue={ritual.description}
-                className="border-2 border-solid border-transparent outline-none focus:border-orange-400 px-2 py-1 rounded-md"
+                className="border-2 border-solid border-transparent outline-none focus:border-orange-400 px-2 py-1 rounded-md text-blue-500 font-bold"
               />
               {errors.description && (
                 <p className="text-red-500">{errors.description.message}</p>
