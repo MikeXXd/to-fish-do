@@ -11,17 +11,17 @@ import {
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { FieldValues, FormProvider, useForm } from "react-hook-form";
-import { IMPORTANCE } from "../../../constants";
 import { useActionOnOutsideClick } from "../../../hooks/useActionOnOutsideClick";
 import { cc } from "../../../util/cc";
 import ImportanceIconFish from "../../ImportanceIconFish";
 import Modal from "../../Modal/Modal";
+import { Modal_Input_Importance } from "../../Modal/Modal_Input_Importance";
+import { Modal_Input_Text } from "../../Modal/Modal_Input_Text";
 import ModalFooter from "../../Modal/ModalFooter";
 import { TaskFormData, taskSchema } from "../constants";
 import { Task } from "../contexts/Task";
 import useTasks from "../hooks/useTasks";
 import { StarIcon } from "./StarIcon";
-import { Modal_Input_Text } from "../../Modal/Modal_Input_Text";
 
 const TASK_ICON_SIZE = 27;
 
@@ -308,32 +308,7 @@ export function TaskListItem({ task }: Props) {
             />
 
             {/* --Importance------------------------------------------ */}
-            <div className="flex flex-col">
-              <label htmlFor="importance">Importance</label>
-              <div
-                id="importance"
-                className="flex justify-between w-full grid-cols-4 gap-2 rounded-md bg-white p-2"
-              >
-                {IMPORTANCE.map((value, index) => (
-                  <div key={index}>
-                    <input
-                      {...methodes.register("importance")}
-                      type="radio"
-                      id={`importance-${index}`}
-                      value={value}
-                      className="peer hidden"
-                      defaultChecked={task.importance === value}
-                    />
-                    <label
-                      htmlFor={`importance-${index}`}
-                      className="block cursor-pointer select-none rounded-md p-2 text-center peer-checked:bg-blue-500 peer-checked:font-bold peer-checked:text-white"
-                    >
-                      {value}
-                    </label>
-                  </div>
-                ))}
-              </div>
-            </div>
+            <Modal_Input_Importance defaultValue={task.importance} />
 
             <ModalFooter
               closeBtnName="Close"
