@@ -10,17 +10,18 @@ import {
   Trash2
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { FieldValues, useForm } from "react-hook-form";
+import { FieldValues, FormProvider, useForm } from "react-hook-form";
 import { IMPORTANCE } from "../../../constants";
 import { useActionOnOutsideClick } from "../../../hooks/useActionOnOutsideClick";
 import { cc } from "../../../util/cc";
 import ImportanceIconFish from "../../ImportanceIconFish";
-import Modal from "../../Modal";
-import ModalFooter from "../../ModalFooter";
+import Modal from "../../Modal/Modal";
+import ModalFooter from "../../Modal/ModalFooter";
 import { TaskFormData, taskSchema } from "../constants";
 import { Task } from "../contexts/Task";
 import useTasks from "../hooks/useTasks";
 import { StarIcon } from "./StarIcon";
+import { Modal_Input_Text } from "../../Modal/Modal_Input_Text";
 
 const TASK_ICON_SIZE = 27;
 
@@ -30,7 +31,6 @@ interface Props {
 
 export function TaskListItem({ task }: Props) {
   const { deleteTask, taskDone, editTask, filterByImportance } = useTasks();
-  // const [isEditing, setIsEditing] = useState<boolean>(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isTaskDeleting, setIsTaskDeleteing] = useState<boolean>(false);
@@ -42,15 +42,11 @@ export function TaskListItem({ task }: Props) {
     }
     return false;
   });
-  // const editRef = useRef<HTMLInputElement>(null);
   const closeMenuRef = useRef<HTMLDivElement>(null);
   useActionOnOutsideClick(isMenuOpen, closeMenuRef, () => setIsMenuOpen(false));
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset
-  } = useForm<TaskFormData>({ resolver: zodResolver(taskSchema) });
+
+  const methodes = useForm<TaskFormData>({ resolver: zodResolver(taskSchema) });
+  const errors = methodes.formState.errors;
 
   const timeLasting = formatDistance(task.timeStamp, new Date(), {
     addSuffix: true
@@ -67,12 +63,12 @@ export function TaskListItem({ task }: Props) {
     };
     editTask(newTask);
     filterByImportance(undefined);
-    reset();
+    methodes.reset();
     setIsModalOpen(false);
   }
 
   function onClose() {
-    reset();
+    methodes.reset();
     setIsModalOpen(false);
   }
 
@@ -110,7 +106,6 @@ export function TaskListItem({ task }: Props) {
       clearTimeout(timeoutId);
     };
   });
-
 
   function handleDeleteTask() {
     setIsTaskDeleteing(true);
@@ -301,56 +296,52 @@ export function TaskListItem({ task }: Props) {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
       >
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3">
-          {/* --Title------------------------------------------ */}
-          <div className="flex flex-col">
-            <label htmlFor="title">Task Title</label>
-            <input
-              type="text"
-              {...register("title")}
-              id="title"
+        <FormProvider {...methodes}>
+          <form
+            onSubmit={methodes.handleSubmit(onSubmit)}
+            className="flex flex-col gap-3"
+          >
+            <Modal_Input_Text
+              name="title"
               defaultValue={task.title}
-              className="border-2 border-solid border-transparent outline-none focus:border-orange-400 px-2 py-1 rounded-md text-blue-500 font-bold"
+              errorMessages={errors.title?.message}
             />
-            {errors.title && errors.title && (
-              <p className="text-red-500">{errors.title.message}</p>
-            )}
-          </div>
 
-          {/* --Importance------------------------------------------ */}
-          <div className="flex flex-col">
-            <label htmlFor="importance">Importance</label>
-            <div
-              id="importance"
-              className="flex justify-between w-full grid-cols-4 gap-2 rounded-md bg-white p-2"
-            >
-              {IMPORTANCE.map((value, index) => (
-                <div key={index}>
-                  <input
-                    {...register("importance")}
-                    type="radio"
-                    id={`importance-${index}`}
-                    value={value}
-                    className="peer hidden"
-                    defaultChecked={task.importance === value}
-                  />
-                  <label
-                    htmlFor={`importance-${index}`}
-                    className="block cursor-pointer select-none rounded-md p-2 text-center peer-checked:bg-blue-500 peer-checked:font-bold peer-checked:text-white"
-                  >
-                    {value}
-                  </label>
-                </div>
-              ))}
+            {/* --Importance------------------------------------------ */}
+            <div className="flex flex-col">
+              <label htmlFor="importance">Importance</label>
+              <div
+                id="importance"
+                className="flex justify-between w-full grid-cols-4 gap-2 rounded-md bg-white p-2"
+              >
+                {IMPORTANCE.map((value, index) => (
+                  <div key={index}>
+                    <input
+                      {...methodes.register("importance")}
+                      type="radio"
+                      id={`importance-${index}`}
+                      value={value}
+                      className="peer hidden"
+                      defaultChecked={task.importance === value}
+                    />
+                    <label
+                      htmlFor={`importance-${index}`}
+                      className="block cursor-pointer select-none rounded-md p-2 text-center peer-checked:bg-blue-500 peer-checked:font-bold peer-checked:text-white"
+                    >
+                      {value}
+                    </label>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
 
-          <ModalFooter
-            closeBtnName="Close"
-            onCancel={onClose}
-            submitBtnName="Save Task"
-          />
-        </form>
+            <ModalFooter
+              closeBtnName="Close"
+              onCancel={onClose}
+              submitBtnName="Save Task"
+            />
+          </form>
+        </FormProvider>
       </Modal>
     </>
   );
