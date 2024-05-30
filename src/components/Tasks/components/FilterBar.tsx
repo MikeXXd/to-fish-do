@@ -1,6 +1,6 @@
 import { Eye, EyeOff, FishSymbol, Hourglass, X } from "lucide-react";
 import useTasks from "../hooks/useTasks";
-import { FilterComponentWrap } from "../../../UI/components/FilterComponentWrap";
+import { FilterComponentWrap } from "./FilterComponentWrap";
 import { FilterDescAscIcon } from "../../FilterDescAscIcon";
 
 interface FilterBarProps {
